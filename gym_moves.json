@@ -1,7 +1,7 @@
 gym_moves = [["penkkipunnerrus", ["ojentajat", "rinta"]], 
              ["hauiskääntö", ["hauis"]],
              ["penkkipunnerrus ojentajat", ["ojentajat"]],
-             ["ranskalainen punnerrus"], ["ojentajat"],
+             ["ranskalainen punnerrus", ["ojentajat"]],
              ["vatsarutistus", ["vatsalihakset"]],
              ["kyykky", ["reidet", "pakarat"]],
              ["askelkyykky", ["reidet", "pakarat"]],
