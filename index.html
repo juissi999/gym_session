@@ -1,0 +1,34 @@
+<html>
+<title>gym_session</title>
+<input id="randb" type="button" value="Random program">
+<div id="functionality"></div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script src="gym_moves.json"></script>
+
+<script>
+   // wait document to load up before doing anything, can use also $(function(){
+   $(document).ready(function() {
+      // initial function that will calculate all the unique categories of muscles
+      var all_muscles = []
+      for (i = 0; i < gym_moves.length; i++) {
+         all_muscles = all_muscles.concat(gym_moves[i][1])
+      }
+      var unique_muscles = Array.from(new Set(all_muscles))
+    
+      // clickfunction for randomizer button
+      $('#randb').click(function validateForm() {
+         document.getElementById("functionality").innerHTML = ""
+         for (i = 0; i < gym_moves.length; i++) {
+            document.getElementById("functionality").innerHTML += gym_moves[i][0]
+            document.getElementById("functionality").innerHTML += "<br>"
+         }
+         document.getElementById("functionality").innerHTML += "<br><br>"
+         
+         document.getElementById("functionality").innerHTML += "Muscles in this training:<br>"
+         document.getElementById("functionality").innerHTML += unique_muscles
+      });
+
+   });
+</script>
+</html>
