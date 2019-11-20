@@ -11,4 +11,12 @@ A tool to create a balanced training session on the go. Thanks for @henu for the
 
 ## Mathematical model
 
-The idea of the first version is to create a stateless no-memory website that will randomize a gym session iterating it so that it would cover as many as possible muscle groups and variability on reps. Over time all the muscle groups would then develop balanced counting on the random distribution. Other training methods like "legs only" or "cardio" are planned.
+The idea of the first version is to create a stateless no-memory website that will randomize a gym session. Muscle balance is important and this is still a problem now because different moves will train different muscle groups and randomization will hence not lean to a balanced distribution. One solution here would be to balance gym_moves, leaving some out, so that the distribution is not heavily leaning to any muscle group. (maybe iterating different subsets)
+
+TODO:
+
+* Other training profiles like "legs only", "cardio" or "rest"
+
+* Mobile optimization
+* Test runs to see how the muscle groups are balanced if e.g. 100 000 sessions are simulated
+* Image that shows how body is stressed on a session (heat map of what muscles are trained)
