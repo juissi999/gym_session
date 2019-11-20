@@ -23,8 +23,9 @@
          for (i = 0; i < howmany; i++) {
             var selected_move = Math.floor(Math.random() * available_moves.length)
             session_moves.push(available_moves[selected_move])
-            available_moves.pop(selected_move)
+            available_moves.splice(selected_move, 1)
          }
+         console.log(available_moves)
       
          var all_muscles = calc_unique_muscles(gym_moves)
          var muscles_in_session = calc_unique_muscles(session_moves)
