@@ -14,7 +14,11 @@
       var maxmoves = 10
    
       // clickfunction for randomizer button
-      $('#randb').click(function validateForm() {
+      $("#randb").click(function validateForm() {
+         $("#functionality").hide(700, randbutton_hide_callback)
+      });   
+      
+      function randbutton_hide_callback() {
          // make a temporary copy of all moves that we will cut down
          var available_moves = gym_moves.slice()
          
@@ -28,8 +32,8 @@
          }
          console.log(available_moves)
       
-         var all_muscles = calc_unique_muscles(gym_moves)
-         var muscles_in_session = calc_unique_muscles(session_moves)
+         var all_muscles = calc_unique_elements(gym_moves)
+         var muscles_in_session = calc_unique_elements(session_moves)
          var coverage = muscles_in_session.length/all_muscles.length
       
          // print page
@@ -40,22 +44,35 @@
          }
          document.getElementById("functionality").innerHTML += "<br><br>"
          document.getElementById("functionality").innerHTML += "Muscles in this session:<br>"
-         document.getElementById("functionality").innerHTML += muscles_in_session
+         
+         document.getElementById("functionality").innerHTML += print_list(muscles_in_session)
          document.getElementById("functionality").innerHTML += "<br><br>"
          document.getElementById("functionality").innerHTML += "All muscles in database:<br>"
-         document.getElementById("functionality").innerHTML += all_muscles
+         document.getElementById("functionality").innerHTML += print_list(all_muscles)
          document.getElementById("functionality").innerHTML += "<br><br>"
          document.getElementById("functionality").innerHTML += "Muscle coverage: " + Math.floor(coverage*100).toString() + "%"
-      });
+         $("#functionality").show(700)
+      }
       
-      function calc_unique_muscles(movelist) {
-         var all_muscles = []
+      function calc_unique_elements(movelist) {
+         // Return list of unique elements appear in the list
+         
+         var all_elements = []
          for (i = 0; i < movelist.length; i++) {
-            all_muscles = all_muscles.concat(movelist[i][1])
+            all_elements = all_elements.concat(movelist[i][1])
          }
       
-         // calculate all unique muscles
-         return(Array.from(new Set(all_muscles)))
+         // calculate all unique elements
+         return(Array.from(new Set(all_elements)))
+      }
+      
+      function print_list(list_to_print) {
+         // return a string of a list so that there is break between elements
+         var print_literal = ""
+         for (i = 0; i < list_to_print.length; i++) {
+            print_literal += list_to_print[i] + " "
+         }
+         return print_literal
       }
 
    });
