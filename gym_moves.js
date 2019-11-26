@@ -1,3 +1,4 @@
+// database:[movename, list_of_muscles_involved]
 window.moves = [
   ["penkkipunnerrus", ["ojentajat", "rinta"]],
   ["hauiskääntö", ["hauis"]],
@@ -30,4 +31,5 @@ window.moves = [
   ["vatsalihakset kierto", ["kyljet"]],
   ["vatsalihakset kierto laitteella", ["kyljet"]]];
 
+// put these in ascending order of intensity
 window.series = ["3x15", "3x10", "5x5"];
