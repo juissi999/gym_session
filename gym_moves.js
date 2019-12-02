@@ -1,5 +1,5 @@
 // database:[movename, list_of_muscles_involved]
-window.moves = [
+var moves = [
   ["penkkipunnerrus", ["ojentajat", "rinta"]],
   ["hauiskääntö", ["hauis"]],
   ["penkkipunnerrus ojentajat", ["ojentajat"]],
@@ -32,4 +32,4 @@ window.moves = [
   ["vatsalihakset kierto laitteella", ["kyljet"]]];
 
 // put these in ascending order of intensity
-window.series = ["3x15", "3x10", "5x5"];
+var series = ["3x15", "3x10", "5x5"];

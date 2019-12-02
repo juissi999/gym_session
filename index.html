@@ -2,11 +2,8 @@
 <title>gym_session</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <body>
-<input id="randb" type="button" style="font-size: 18px" value="Random workout">
-<div id="options"></div>
 <div id="functionality"></div>
 </body>
-
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 <script src="gym_moves.js"></script>
@@ -15,8 +12,8 @@
 <script>
    // wait document to load up before doing anything, can use also $(function(){
    $(document).ready(function() {
-   
-      var maxmoves = 10
+      gym_session("#functionality", $);
+     // <div id="options"></div>      
    
       // generate buttons
       // var optionstr = "";
@@ -24,61 +21,6 @@
          //optionstr += "<input id=\"rb" + i + "\" type=\"button\" value=\"" + window.series[i] + "\">";
       //}
       //document.getElementById("options").innerHTML = optionstr;
-   
-   
-      // clickfunction for randomizer button
-      $("#randb").click(function validateForm() {
-         $("#functionality").hide(700, randbutton_hide_callback)
-      });
-      
-      function randbutton_hide_callback() {
-         // make a temporary copy of all moves that we will cut down
-         var available_moves = window.moves.slice()
-         
-         // random how many moves to do today
-         var movecount = rand_int(maxmoves) // here +1 if not want a rest day
-         
-         // how many different series are found (ascending in intensity)
-         var intensity_level_count = window.series.length
-         
-         const [session_moves, session_intensity_levels] = generate_workout(available_moves, movecount, intensity_level_count)
-         
-         // calculate muscle coverage things
-         var all_muscles = calc_unique_elements(window.moves)
-         var muscles_in_session = calc_unique_elements(session_moves)
-         var coverage = muscles_in_session.length/all_muscles.length
-      
-         // print page
-         var pagestr = "<br><table>"
-         for (i = 0; i < session_moves.length; i++) {
-            pagestr += "<tr><td>"
-            pagestr += window.series[session_intensity_levels[i]]
-            pagestr += "</td><td>"
-            pagestr += session_moves[i][0]
-            pagestr += "</td></tr>"
-         }
-         pagestr += "</table>"
-         if (movecount ==0){
-            pagestr += "REST! Go to McDonalds."
-         }
-         
-         pagestr += "<br><br>"
-         pagestr += "Muscles in this session:<br>"
-         pagestr += print_list(muscles_in_session)
-         pagestr += "<br><br>"
-         pagestr += "All muscles in database:<br>"
-         pagestr += print_list(all_muscles)
-         pagestr += "<br><br>"
-         pagestr += "Muscle coverage: " + Math.floor(coverage*100).toString() + "%"
-         pagestr += "<br>"
-         pagestr += "Intensity: " + calculate_intensity(maxmoves, session_intensity_levels, intensity_level_count).toString() + "%"
-         
-         document.getElementById("functionality").innerHTML = pagestr
-         
-         $("#functionality").show(700)
-      }
-      
-
 
    });
 </script>
