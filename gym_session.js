@@ -6,7 +6,7 @@ var gym_session = function (selector, $) {
 
    function libs_loaded_callback() {
 
-      $(selector).append("<input id=\"randb\" type=\"button\" style=\"font-size: 18px\" value=\"Random workout\"></input>"); // ; margin-bottom:7px
+      $(selector).append("<input id=\"randb\" type=\"button\" value=\"Random workout\"></input>"); // ; margin-bottom:7px
       $(selector).append("<div id=\"gs_div\"></div>");
 
       // <div id="options"></div>
@@ -46,7 +46,7 @@ var gym_session = function (selector, $) {
          var coverage = muscles_in_session.length/all_muscles.length;
 
          // print page
-         var element_divider = "<div class=\"element_divider\" style=\"height:7px\"></div>"
+         var element_divider = "<div class=\"element_divider\"></div>"
          
          var pagestr = element_divider
          if (movecount ==0){
@@ -226,7 +226,6 @@ var gym_session = function (selector, $) {
                      .data(vdata)
                      .enter().append("circle")
                      .attr("r", function (d) {return d.count})
-                   //  .style("fill", "lightblue");
                      .style("fill", function (d) {
                         if (d.maxintensity == 0) {
                            return "lightgreen"
