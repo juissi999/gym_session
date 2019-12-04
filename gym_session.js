@@ -6,7 +6,7 @@ var gym_session = function (selector, $) {
 
    function libs_loaded_callback() {
 
-      $(selector).append("<input id=\"randb\" type=\"button\" style=\"font-size: 18px; margin-bottom:7px\" value=\"Random workout\"></input>");
+      $(selector).append("<input id=\"randb\" type=\"button\" style=\"font-size: 18px\" value=\"Random workout\"></input>"); // ; margin-bottom:7px
       $(selector).append("<div id=\"gs_div\"></div>");
 
       // <div id="options"></div>
@@ -46,17 +46,20 @@ var gym_session = function (selector, $) {
          var coverage = muscles_in_session.length/all_muscles.length;
 
          // print page
-         var pagestr = "<table>";
-         for (i = 0; i < session_moves.length; i++) {;
-            pagestr += "<tr><td>";
-            pagestr += series[session_intensity_levels[i]];
-            pagestr += "</td><td>";
-            pagestr += session_moves[i][0];
-            pagestr += "</td></tr>";
-         }
-         pagestr += "</table>"
+         var element_divider = "<br style=\"line-height:7px\" />"
+         var pagestr = element_divider
          if (movecount ==0){
-            pagestr += "REST! Go to McDonalds."
+            pagestr += "REST! Go to McDonalds.<br>";
+         } else {
+            pagestr += "<table>";
+            for (i = 0; i < session_moves.length; i++) {;
+               pagestr += "<tr><td>";
+               pagestr += series[session_intensity_levels[i]];
+               pagestr += "</td><td>";
+               pagestr += session_moves[i][0];
+               pagestr += "</td></tr>";
+            }
+            pagestr += "</table>"
          }
 
          // pagestr += "<br><br>"
@@ -65,13 +68,13 @@ var gym_session = function (selector, $) {
          // pagestr += "<br><br>"
          // pagestr += "All muscles in database:<br>"
          // pagestr += print_list(all_muscles)
-         pagestr += "<br>"
+         pagestr += element_divider
          pagestr += "Muscle coverage: " + Math.floor(coverage*100).toString() + "%"
          pagestr += "<br>"
-         pagestr += "Intensity: " + calculate_intensity(maxmoves, session_intensity_levels, intensity_level_count).toString() + "%"
+         pagestr += "Intensity: " + calculate_intensity(maxmoves, session_intensity_levels, intensity_level_count).toString() + "%<br>"
          
          // this extra br because svg added
-         pagestr += "<br>"
+         pagestr += element_divider
          document.getElementById("gs_div").innerHTML = pagestr
 
          // take the second value (muscles) from nested lists in database
