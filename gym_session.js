@@ -6,7 +6,7 @@ var gym_session = function (selector, $) {
 
    function libs_loaded_callback() {
 
-      $(selector).append("<input id=\"randb\" type=\"button\" style=\"font-size: 18px\" value=\"Random workout\"></input>");
+      $(selector).append("<input id=\"randb\" type=\"button\" style=\"font-size: 18px; margin-bottom:7px\" value=\"Random workout\"></input>");
       $(selector).append("<div id=\"gs_div\"></div>");
 
       // <div id="options"></div>
@@ -46,7 +46,7 @@ var gym_session = function (selector, $) {
          var coverage = muscles_in_session.length/all_muscles.length;
 
          // print page
-         var pagestr = "<br><table>";
+         var pagestr = "<table>";
          for (i = 0; i < session_moves.length; i++) {;
             pagestr += "<tr><td>";
             pagestr += series[session_intensity_levels[i]];
@@ -65,7 +65,7 @@ var gym_session = function (selector, $) {
          // pagestr += "<br><br>"
          // pagestr += "All muscles in database:<br>"
          // pagestr += print_list(all_muscles)
-         pagestr += "<br><br>"
+         pagestr += "<br>"
          pagestr += "Muscle coverage: " + Math.floor(coverage*100).toString() + "%"
          pagestr += "<br>"
          pagestr += "Intensity: " + calculate_intensity(maxmoves, session_intensity_levels, intensity_level_count).toString() + "%"
