@@ -46,7 +46,8 @@ var gym_session = function (selector, $) {
          var coverage = muscles_in_session.length/all_muscles.length;
 
          // print page
-         var element_divider = "<br style=\"line-height:5px\" />"
+         var element_divider = "<div class=\"element_divider\" style=\"height:7px\"></div>"
+         
          var pagestr = element_divider
          if (movecount ==0){
             pagestr += "REST! Go to McDonalds.<br>";
