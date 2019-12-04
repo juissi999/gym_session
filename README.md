@@ -5,6 +5,8 @@ A tool to create a balanced training session on the go. Thanks for @henu for the
 
 ## Demo
 
+NOTE! Use at your own risk and only if you know what you are doing on gym.
+
 <https://juissi999.github.io/gym_session/>
 
 
@@ -15,11 +17,7 @@ The idea of the first version is to create a stateless no-memory website that wi
 
 TODO:
 
-* Other training profiles like "legs only", "cardio" or "rest"
-
-* Mobile optimization
 * Test runs to see how the muscle groups are balanced if e.g. 100 000 sessions are simulated
-* Image that shows how body is stressed on a session (heat map of what muscles are trained)
-
+* Real database with a source for muscles
 * Unit tests, this software is for real training use so it needs to work.
 * Cookies to store the session if user accidentally closes the browser or tab and also maybe only allow one version of the workout per day to avoid user choosing "nice workout" which will affect randomization.
