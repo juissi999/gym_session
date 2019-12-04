@@ -58,13 +58,13 @@ var gym_session = function (selector, $) {
          if (movecount ==0){
             pagestr += "REST! Go to McDonalds."
          }
-         
-         pagestr += "<br><br>"
-         pagestr += "Muscles in this session:<br>"
-         pagestr += print_list(muscles_in_session)
-         pagestr += "<br><br>"
-         pagestr += "All muscles in database:<br>"
-         pagestr += print_list(all_muscles)
+
+         // pagestr += "<br><br>"
+         // pagestr += "Muscles in this session:<br>"
+         // pagestr += print_list(muscles_in_session)
+         // pagestr += "<br><br>"
+         // pagestr += "All muscles in database:<br>"
+         // pagestr += print_list(all_muscles)
          pagestr += "<br><br>"
          pagestr += "Muscle coverage: " + Math.floor(coverage*100).toString() + "%"
          pagestr += "<br>"
@@ -78,18 +78,42 @@ var gym_session = function (selector, $) {
          list_of_movelists = get_nested_list(session_moves, 1);
 
          // concatenate lists of many to one list
-         var duplicate_session_muscles = [];
-         list_of_movelists.forEach( element => {
-            element.forEach(el => {
-               duplicate_session_muscles.push(el)
-            });
-         });
+         // var duplicate_session_muscles = [];
+         // list_of_movelists.forEach( element => {
+         //    element.forEach(el => {
+         //       duplicate_session_muscles.push(el)
+         //    });
+         // });
 
-         var vdata = [];
-         for (i = 0; i < muscles_in_session.length; i++) {
-            var muscle = muscles_in_session[i]
-            vdata.push({"muscle":muscle, "count":count_in_array(duplicate_session_muscles, muscle)*30})
+         //var max_of_array = Math.max.apply(Math, array);
+
+         // make data structure for d3-visualization
+         // var vdata = [];
+         // for (i = 0; i < muscles_in_session.length; i++) {
+         //    var muscle = muscles_in_session[i]
+         //    vdata.push({"muscle":muscle, "count":count_in_array(duplicate_session_muscles, muscle)*30})
+         // }
+
+         // form muscle stress object, collect to object muscle name, and intensities
+         // it has in the training session
+         var duplicate_session_muscles = [];
+         var muscle_intensities = {}
+         for (i = 0; i < list_of_movelists.length; i++) {
+            list_of_movelists[i].forEach(el => {
+               duplicate_session_muscles.push(el)
+               if (muscle_intensities.hasOwnProperty(el)) {
+                  muscle_intensities[el].push(session_intensity_levels[i])
+               } else {
+                  muscle_intensities[el] = [session_intensity_levels[i]]
+               }
+            });
          }
+
+         // form d3-dataobject from muscle stress object
+         var vdata = [];
+         for (let key in muscle_intensities) {
+            vdata.push({"muscle":key, "count":muscle_intensities[key].length*30, "maxintensity":Math.max.apply(Math, muscle_intensities[key])})
+         }; 
 
          // var example_data = [{"muscle":"moi", "count":30},
          generate_bubblechart("#gs_div", vdata);
@@ -198,7 +222,16 @@ var gym_session = function (selector, $) {
                      .data(vdata)
                      .enter().append("circle")
                      .attr("r", function (d) {return d.count})
-                     .style("fill", "lightblue");
+                   //  .style("fill", "lightblue");
+                     .style("fill", function (d) {
+                        if (d.maxintensity == 0) {
+                           return "lightgreen"
+                        } else if (d.maxintensity == 1) {
+                           return "khaki"
+                        } else {
+                           return "lightpink"
+                        }
+                     });
 
          var texts = svg.selectAll("texts")
                      .data(vdata)
