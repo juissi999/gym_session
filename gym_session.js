@@ -103,23 +103,6 @@ var gym_session = function (selector, $) {
          // take the second value (muscles) from nested lists in database
          list_of_movelists = get_nested_list(session_moves, 1);
 
-         // concatenate lists of many to one list
-         // var duplicate_session_muscles = [];
-         // list_of_movelists.forEach( element => {
-         //    element.forEach(el => {
-         //       duplicate_session_muscles.push(el)
-         //    });
-         // });
-
-         //var max_of_array = Math.max.apply(Math, array);
-
-         // make data structure for d3-visualization
-         // var vdata = [];
-         // for (i = 0; i < muscles_in_session.length; i++) {
-         //    var muscle = muscles_in_session[i]
-         //    vdata.push({"muscle":muscle, "count":count_in_array(duplicate_session_muscles, muscle)*30})
-         // }
-
          // form muscle stress object, collect to object muscle name, and intensities
          // it has in the training session
          var duplicate_session_muscles = [];
@@ -260,6 +243,12 @@ var gym_session = function (selector, $) {
 
       function str2int_list(inputlist) {
          // transform a list of "string-numbers" to list of int numbers
+
+         // check that the input is actually a list and not empty string (bugfix)
+         if (inputlist == ""){
+            return [];
+         }
+
          var integervalues = [];
 
          inputlist.split(",").forEach(el => {
