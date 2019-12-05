@@ -2,7 +2,7 @@ var gym_session = function (selector, $) {
    // js app that lets the user randomize gym workouts
 
    // first load libraries and after call libs_loaded_callback
-   $.getScript("https://d3js.org/d3.v5.min.js", libs_loaded_callback())
+   $.getScript("https://d3js.org/d3.v5.min.js").done(libs_loaded_callback)
 
    function libs_loaded_callback() {
 
@@ -10,14 +10,6 @@ var gym_session = function (selector, $) {
       $(selector).append("<input id=\"randb\" type=\"button\" value=\"Random workout\"></input>"); // ; margin-bottom:7px
       $(selector).append("<input id=\"dmodeb\" type=\"button\" value=\"D\"></input>");
       $(selector).append("<div id=\"gs_div\"></div>");
-
-      // <div id="options"></div>
-      // generate buttons
-      // var optionstr = "";
-      //for (i = 0; i < window.series.length; i++) {
-         //optionstr += "<input id=\"rb" + i + "\" type=\"button\" value=\"" + window.series[i] + "\">";
-      //}
-      //document.getElementById("options").innerHTML = optionstr;
 
       // darkmode switch
       var darkmodeon = false;
@@ -34,17 +26,26 @@ var gym_session = function (selector, $) {
          }
       });
 
+      // make a temporary copy of all moves that we will cut down
+      var available_moves = moves.slice();
+
+
       // clickfunction for randomizer button
       $("#randb").click(function () {
          $("#gs_div").hide(700, randbutton_hide_callback);
       });
 
-      var maxmoves = 10;
+      // cookie stuff
+      // check if loaded cookies contain previous session
+      var loaded_cookies = loadcookies();
+      if (Object.keys(loaded_cookies).length > 0) {
+         display_session(str2int_list(loaded_cookies["smi"]), str2int_list(loaded_cookies["sil"]),
+                                      Number(loaded_cookies["ilc"]), Number(loaded_cookies["maxmoves"]));
+      }
+
 
       function randbutton_hide_callback() {
-         // make a temporary copy of all moves that we will cut down
-         var available_moves = moves.slice();
-         
+         var maxmoves = 10;
          // random how many moves to do today
          var movecount = rand_int(maxmoves); // here +1 if not want a rest day
          
@@ -53,6 +54,10 @@ var gym_session = function (selector, $) {
          
          // generate workout
          const [session_move_indices, session_intensity_levels] = generate_workout(available_moves.length, movecount, intensity_level_count);
+         display_session(session_move_indices, session_intensity_levels, intensity_level_count, maxmoves);
+      }
+
+      function display_session(session_move_indices, session_intensity_levels, intensity_level_count, maxmoves) {
 
          // map the move_indices to moves
          session_moves = index_with_array(available_moves, session_move_indices);
@@ -66,7 +71,7 @@ var gym_session = function (selector, $) {
          var element_divider = "<div class=\"element_divider\"></div>"
          
          var pagestr = element_divider
-         if (movecount ==0){
+         if (session_move_indices.length ==0){
             pagestr += "REST! Go to McDonalds.<br>";
          } else {
             pagestr += "<table>";
@@ -90,7 +95,7 @@ var gym_session = function (selector, $) {
          pagestr += "Muscle coverage: " + Math.floor(coverage*100).toString() + "%"
          pagestr += "<br>"
          pagestr += "Intensity: " + calculate_intensity(maxmoves, session_intensity_levels, intensity_level_count).toString() + "%<br>"
-         
+
          // this extra br because svg added
          pagestr += element_divider
          document.getElementById("gs_div").innerHTML = pagestr
@@ -139,6 +144,9 @@ var gym_session = function (selector, $) {
          // var example_data = [{"muscle":"moi", "count":30},
          generate_bubblechart("#gs_div", vdata);
          
+         savecookies([{"id":"smi", "l":session_move_indices}, {"id":"sil", "l":session_intensity_levels},
+                      {"id":"ilc", "l":intensity_level_count}, {"id":"maxmoves", "l":maxmoves}]);
+
          $("#gs_div").show(700)
       }
 
@@ -228,6 +236,51 @@ var gym_session = function (selector, $) {
             available_moves.splice(selected_move, 1);
          }
          return [session_moves, session_intensity_levels];
+      }
+
+      function loadcookies () {
+         // cut cookies off of each other
+         var cookies = document.cookie.split(";");
+
+         // cut cookie ids and values off of each other
+         var loaded_cookies = {};
+         cookies.forEach(el => {
+            var cookiepair = el.split("=");
+            var id = cookiepair[0].trim();
+            if (Array.isArray(cookiepair[1])) {
+               var value = cookiepair[1].split(",");
+            } else {
+               var value = cookiepair[1];
+            }
+
+            loaded_cookies[id]=value;
+         });
+         return loaded_cookies;
+      }
+
+      function str2int_list(inputlist) {
+         // transform a list of "string-numbers" to list of int numbers
+         var integervalues = [];
+
+         inputlist.split(",").forEach(el => {
+            integervalues.push(Number(el));
+         });
+         return integervalues;
+      }
+
+      function savecookies (lists_to_store) {
+         // save session for cookie for one day
+         // expects a list of objects where "id" is id, and "l" is list of elements
+         var expiresattrib = new Date(Date.now()+60*1000);
+         lists_to_store.forEach( el => {
+            if (Array.isArray(el.l)) {
+               str = el.l.join()
+            } else {
+               str = el.l;
+            }
+            var cookiestr = el.id + "=" + str + ";" + expiresattrib + ";"
+            document.cookie = cookiestr;
+         });
       }
 
       function generate_bubblechart(element, vdata) {
