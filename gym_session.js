@@ -11,24 +11,31 @@ var gym_session = function (selector, $) {
       $(selector).append("<input id=\"dmodeb\" type=\"button\" value=\"D\"></input>");
       $(selector).append("<div id=\"gs_div\"></div>");
 
-      // darkmode switch
-      var darkmodeon = false;
       $("#dmodeb").click(function () {
-         var self = $(this);
-         if (!darkmodeon) {
-            self.val("L");
+         // change darkmode state
+         darkmodeon = !darkmodeon;
+         set_darkmode();
+      })
+
+      // default darkmode
+      var darkmodeon = false;
+      function set_darkmode () {
+         var dbutton = $("#dmodeb");
+         if (darkmodeon) {
+            // if dark mode set to on
+            dbutton.val("L");
             $(selector).addClass("darktheme")
             darkmodeon = true;
          } else {
-            self.val("D");
+            dbutton.val("D");
             $(selector).removeClass("darktheme")
             darkmodeon = false;
          }
-      });
+         savecookies([{"id":"darkmode", "l":darkmodeon}]);
+      }
 
       // make a temporary copy of all moves that we will cut down
       var available_moves = moves.slice();
-
 
       // clickfunction for randomizer button
       $("#randb").click(function () {
@@ -41,6 +48,16 @@ var gym_session = function (selector, $) {
       if (("smi" in loaded_cookies) && ("sil" in loaded_cookies) && ("ilc" in loaded_cookies) && ("maxmoves" in loaded_cookies)) {
          display_session(str2int_list(loaded_cookies["smi"]), str2int_list(loaded_cookies["sil"]),
                                       Number(loaded_cookies["ilc"]), Number(loaded_cookies["maxmoves"]));
+      }
+
+
+      if ("darkmode" in loaded_cookies) {
+         if (loaded_cookies["darkmode"]=="true"){
+            darkmodeon = true;
+         } else if (loaded_cookies["darkmode"]=="false") {
+            darkmodeon = false;
+         }
+         set_darkmode();
       }
 
 
@@ -128,7 +145,7 @@ var gym_session = function (selector, $) {
          generate_bubblechart("#gs_div", vdata);
          
          savecookies([{"id":"smi", "l":session_move_indices}, {"id":"sil", "l":session_intensity_levels},
-                      {"id":"ilc", "l":intensity_level_count}, {"id":"maxmoves", "l":maxmoves}]);
+                      {"id":"ilc", "l":intensity_level_count}, {"id":"maxmoves", "l":maxmoves}], 1);
 
          $("#gs_div").show(700)
       }
@@ -257,10 +274,10 @@ var gym_session = function (selector, $) {
          return integervalues;
       }
 
-      function savecookies (lists_to_store) {
+      function savecookies (lists_to_store, days) {
          // save session for cookie for one day
          // expects a list of objects where "id" is id, and "l" is list of elements
-         var expiresattrib = new Date(Date.now() + 60 * 60 * 24 * 1000 );
+         var expiresattrib = new Date(Date.now() + days*60*60*24*1000 );
          lists_to_store.forEach( el => {
             if (Array.isArray(el.l)) {
                str = el.l.join()
