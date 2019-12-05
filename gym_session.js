@@ -6,7 +6,9 @@ var gym_session = function (selector, $) {
 
    function libs_loaded_callback() {
 
+      // generate control-buttons
       $(selector).append("<input id=\"randb\" type=\"button\" value=\"Random workout\"></input>"); // ; margin-bottom:7px
+      $(selector).append("<input id=\"dmodeb\" type=\"button\" value=\"D\"></input>");
       $(selector).append("<div id=\"gs_div\"></div>");
 
       // <div id="options"></div>
@@ -17,8 +19,20 @@ var gym_session = function (selector, $) {
       //}
       //document.getElementById("options").innerHTML = optionstr;
 
+      // darkmode switch
+      var darkmodeon = false;
+      $("#dmodeb").click(function () {
+         if (!darkmodeon) {
+            $(selector).addClass("darktheme")
+            darkmodeon = true;
+         } else {
+            $(selector).removeClass("darktheme")
+            darkmodeon = false;
+         }
+      });
+
       // clickfunction for randomizer button
-      $("#randb").click(function validateForm() {
+      $("#randb").click(function () {
          $("#gs_div").hide(700, randbutton_hide_callback);
       });
 
@@ -221,6 +235,7 @@ var gym_session = function (selector, $) {
          var svg = d3.select(element).append("svg")
                      .attr("height", height)
                      .attr("width", width)
+                     .attr("viewBox", [0, 0, width, height])
 
          var circles = svg.selectAll("circle")
                      .data(vdata)
@@ -243,8 +258,6 @@ var gym_session = function (selector, $) {
                         return d.muscle;
                      })
                      .attr("text-anchor", "middle")
-                     .attr('font-size', 15)
-                     .style("fill", "black")
 
          var simulation = d3.forceSimulation()
             .force("x", d3.forceX(width/2).strength(0.05))

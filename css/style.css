@@ -1,5 +1,27 @@
-input {
+body {
+   font-family:Helvetica, Arial, sans-serif;
+   background-color: white;
+   margin: 10px;
+   fill: black;
+}
+
+svg {
+   font-size:15;
+}
+
+input[type="button"] {
    font-size: 18px;
+   margin-right:5px;
+}
+
+.darktheme {
+   background-color: #333;
+   color: #fff;
+   fill: black;
+}
+
+.options {
+   margin-right:200px;
 }
 
 .element_divider {
