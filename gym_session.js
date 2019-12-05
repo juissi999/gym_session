@@ -38,7 +38,7 @@ var gym_session = function (selector, $) {
       // cookie stuff
       // check if loaded cookies contain previous session
       var loaded_cookies = loadcookies();
-      if (Object.keys(loaded_cookies).length > 0) {
+      if (("smi" in loaded_cookies) && ("sil" in loaded_cookies) && ("ilc" in loaded_cookies) && ("maxmoves" in loaded_cookies)) {
          display_session(str2int_list(loaded_cookies["smi"]), str2int_list(loaded_cookies["sil"]),
                                       Number(loaded_cookies["ilc"]), Number(loaded_cookies["maxmoves"]));
       }
@@ -271,14 +271,14 @@ var gym_session = function (selector, $) {
       function savecookies (lists_to_store) {
          // save session for cookie for one day
          // expects a list of objects where "id" is id, and "l" is list of elements
-         var expiresattrib = new Date(Date.now()+60*1000);
+         var expiresattrib = new Date(Date.now() + 60 * 60 * 24 * 1000 );
          lists_to_store.forEach( el => {
             if (Array.isArray(el.l)) {
                str = el.l.join()
             } else {
                str = el.l;
             }
-            var cookiestr = el.id + "=" + str + ";" + expiresattrib + ";"
+            var cookiestr = el.id + "=" + str + ";expires=" + expiresattrib + ";"
             document.cookie = cookiestr;
          });
       }
