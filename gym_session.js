@@ -22,10 +22,13 @@ var gym_session = function (selector, $) {
       // darkmode switch
       var darkmodeon = false;
       $("#dmodeb").click(function () {
+         var self = $(this);
          if (!darkmodeon) {
+            self.val("L");
             $(selector).addClass("darktheme")
             darkmodeon = true;
          } else {
+            self.val("D");
             $(selector).removeClass("darktheme")
             darkmodeon = false;
          }
