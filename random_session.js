@@ -1,10 +1,10 @@
-var gym_session = function (selector, $, blocks, session_types) {
-   // js app that lets the user randomize a session
-   // selector is the element selector of where app is placed,
+var random_session = function (selector, $, blocks, session_types) {
+   // Js app that lets the user randomize a session.
+   // Selector is the element selector of where app is placed,
    // $ is jquery, blocks is list of lists of 
    // [block_name, [block_impacts_to1, block_impacts_to2, ...]],
    // session_types is a list of session types e.g. ["5min", "10min", "15min"]
-   // ascending in intensity
+   // ascending in intensity.
 
    // first load libraries and after call libs_loaded_callback
    $.getScript("https://d3js.org/d3.v5.min.js").done(libs_loaded_callback)
