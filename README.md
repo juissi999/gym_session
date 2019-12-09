@@ -20,4 +20,12 @@ TODO:
 * Test runs to see how the muscle groups are balanced if e.g. 100 000 sessions are simulated
 * Real database with a source for muscles
 * Unit tests, this software is for real training use so it needs to work.
-* Cookies to store the session if user accidentally closes the browser or tab and also maybe only allow one version of the workout per day to avoid user choosing "nice workout" which will affect randomization.
+
+
+
+## Technologies used
+
+* jQuery
+* D3.js
+* cookies
+* css

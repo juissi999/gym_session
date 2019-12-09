@@ -138,7 +138,7 @@ var gym_session = function (selector, $) {
          // form d3-dataobject from muscle stress object
          var vdata = [];
          for (let key in muscle_intensities) {
-            vdata.push({"muscle":key, "count":muscle_intensities[key].length*30, "maxintensity":Math.max.apply(Math, muscle_intensities[key])})
+            vdata.push({"muscle":key, "count":muscle_intensities[key].length, "maxintensity":Math.max.apply(Math, muscle_intensities[key])})
          }; 
 
          // var example_data = [{"muscle":"moi", "count":30},
@@ -291,8 +291,9 @@ var gym_session = function (selector, $) {
 
       function generate_bubblechart(element, vdata) {
          // make a bubble chart d3 visualization
-         var width = 300
-         var height = 300
+         var width = 300;
+         var height = 300;
+         var ballsize = 30;
 
          var svg = d3.select(element).append("svg")
                      .attr("height", height)
@@ -302,7 +303,8 @@ var gym_session = function (selector, $) {
          var circles = svg.selectAll("circle")
                      .data(vdata)
                      .enter().append("circle")
-                     .attr("r", function (d) {return d.count})
+ //                   .attr("r", function (d) {return d.count*ballsize })
+                     .attr("r", function (d) { return ballsize*Math.pow(1.6, d.count-1)})
                      .style("fill", function (d) {
                         if (d.maxintensity == 0) {
                            return "lightgreen"
@@ -325,7 +327,8 @@ var gym_session = function (selector, $) {
             .force("x", d3.forceX(width/2).strength(0.05))
             .force("y", d3.forceY(height/2).strength(0.05))
             .force("collide", d3.forceCollide(function(d) {
-                return d.count + 1
+               return ballsize*Math.pow(1.6, d.count-1) + 1
+              // return d.count*ballsize + 1
             }))
 
         simulation.nodes(vdata)
