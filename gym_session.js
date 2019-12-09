@@ -1,5 +1,10 @@
-var gym_session = function (selector, $) {
-   // js app that lets the user randomize gym workouts
+var gym_session = function (selector, $, blocks, session_types) {
+   // js app that lets the user randomize a session
+   // selector is the element selector of where app is placed,
+   // $ is jquery, blocks is list of lists of 
+   // [block_name, [block_impacts_to1, block_impacts_to2, ...]],
+   // session_types is a list of session types e.g. ["5min", "10min", "15min"]
+   // ascending in intensity
 
    // first load libraries and after call libs_loaded_callback
    $.getScript("https://d3js.org/d3.v5.min.js").done(libs_loaded_callback)
@@ -35,7 +40,7 @@ var gym_session = function (selector, $) {
       }
 
       // make a temporary copy of all moves that we will cut down
-      var available_moves = moves.slice();
+      var available_blocks = blocks.slice();
 
       // clickfunction for randomizer button
       $("#randb").click(function () {
@@ -62,25 +67,25 @@ var gym_session = function (selector, $) {
 
 
       function randbutton_hide_callback() {
-         var maxmoves = 10;
-         // random how many moves to do today
-         var movecount = rand_int(maxmoves); // here +1 if not want a rest day
+         var max_blocks = 10;
+         // random how many blocks to include in this session
+         var block_count = rand_int(max_blocks);
          
-         // how many different series are found (ascending in intensity)
-         var intensity_level_count = series.length;
+         // how many different session types are found
+         var session_type_count = session_types.length;
          
          // generate workout
-         const [session_move_indices, session_intensity_levels] = generate_workout(available_moves.length, movecount, intensity_level_count);
-         display_session(session_move_indices, session_intensity_levels, intensity_level_count, maxmoves);
+         const [session_move_indices, session_intensity_levels] = generate_workout(available_blocks.length, block_count, session_type_count);
+         display_session(session_move_indices, session_intensity_levels, session_type_count, max_blocks);
       }
 
       function display_session(session_move_indices, session_intensity_levels, intensity_level_count, maxmoves) {
 
          // map the move_indices to moves
-         session_moves = index_with_array(available_moves, session_move_indices);
+         session_moves = index_with_array(available_blocks, session_move_indices);
 
          // calculate muscle coverage things
-         var all_muscles = calc_unique_elements(moves);
+         var all_muscles = calc_unique_elements(blocks);
          var muscles_in_session = calc_unique_elements(session_moves);
          var coverage = muscles_in_session.length/all_muscles.length;
 
@@ -94,7 +99,7 @@ var gym_session = function (selector, $) {
             pagestr += "<table>";
             for (i = 0; i < session_moves.length; i++) {;
                pagestr += "<tr><td>";
-               pagestr += series[session_intensity_levels[i]];
+               pagestr += session_types[session_intensity_levels[i]];
                pagestr += "</td><td>";
                pagestr += session_moves[i][0];
                pagestr += "</td></tr>";
