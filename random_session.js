@@ -29,11 +29,11 @@ var random_session = function (selector, $, blocks, session_types) {
          if (darkmodeon) {
             // if dark mode set to on
             dbutton.val("L");
-            $(selector).addClass("darktheme")
+            $(selector).addClass("darktheme");
             darkmodeon = true;
          } else {
             dbutton.val("D");
-            $(selector).removeClass("darktheme")
+            $(selector).removeClass("darktheme");
             darkmodeon = false;
          }
          savecookies([{"id":"darkmode", "l":darkmodeon}]);
@@ -50,9 +50,9 @@ var random_session = function (selector, $, blocks, session_types) {
       // cookie stuff
       // check if loaded cookies contain previous session
       var loaded_cookies = loadcookies();
-      if (("smi" in loaded_cookies) && ("sil" in loaded_cookies) && ("ilc" in loaded_cookies) && ("maxmoves" in loaded_cookies)) {
+      if (("smi" in loaded_cookies) && ("sil" in loaded_cookies) && ("ilc" in loaded_cookies) && ("max_blocks" in loaded_cookies)) {
          display_session(str2int_list(loaded_cookies["smi"]), str2int_list(loaded_cookies["sil"]),
-                                      Number(loaded_cookies["ilc"]), Number(loaded_cookies["maxmoves"]));
+                                      Number(loaded_cookies["ilc"]), Number(loaded_cookies["max_blocks"]));
       }
 
 
@@ -79,20 +79,20 @@ var random_session = function (selector, $, blocks, session_types) {
          display_session(session_move_indices, session_intensity_levels, session_type_count, max_blocks);
       }
 
-      function display_session(session_move_indices, session_intensity_levels, intensity_level_count, maxmoves) {
+      function display_session(session_move_indices, session_intensity_levels, intensity_level_count, max_blocks) {
 
          // map the move_indices to moves
          session_moves = index_with_array(available_blocks, session_move_indices);
 
          // calculate muscle coverage things
-         var all_muscles = calc_unique_elements(blocks);
-         var muscles_in_session = calc_unique_elements(session_moves);
-         var coverage = muscles_in_session.length/all_muscles.length;
+         var all_block_impacts = calc_unique_elements(get_nested_list(blocks, 1));
+         var impacts_in_session = calc_unique_elements(get_nested_list(session_moves, 1));
+         var coverage = impacts_in_session.length/all_block_impacts.length;
 
          // print page
-         var element_divider = "<div class=\"element_divider\"></div>"
+         var element_divider = "<div class=\"element_divider\"></div>";
          
-         var pagestr = element_divider
+         var pagestr = element_divider;
          if (session_move_indices.length ==0){
             pagestr += "REST! Go to McDonalds.<br>";
          } else {
@@ -104,7 +104,7 @@ var random_session = function (selector, $, blocks, session_types) {
                pagestr += session_moves[i][0];
                pagestr += "</td></tr>";
             }
-            pagestr += "</table>"
+            pagestr += "</table>";
          }
 
          // pagestr += "<br><br>"
@@ -113,14 +113,14 @@ var random_session = function (selector, $, blocks, session_types) {
          // pagestr += "<br><br>"
          // pagestr += "All muscles in database:<br>"
          // pagestr += print_list(all_muscles)
-         pagestr += element_divider
-         pagestr += "Muscle coverage: " + Math.floor(coverage*100).toString() + "%"
-         pagestr += "<br>"
-         pagestr += "Intensity: " + calculate_intensity(maxmoves, session_intensity_levels, intensity_level_count).toString() + "%<br>"
+         pagestr += element_divider;
+         pagestr += "Muscle coverage: " + Math.floor(coverage*100).toString() + "%";
+         pagestr += "<br>";
+         pagestr += "Intensity: " + calculate_intensity(max_blocks, session_intensity_levels, intensity_level_count).toString() + "%<br>";
 
          // this extra br because svg added
-         pagestr += element_divider
-         document.getElementById("gs_div").innerHTML = pagestr
+         pagestr += element_divider;
+         document.getElementById("gs_div").innerHTML = pagestr;
 
          // take the second value (muscles) from nested lists in database
          list_of_movelists = get_nested_list(session_moves, 1);
@@ -128,14 +128,14 @@ var random_session = function (selector, $, blocks, session_types) {
          // form muscle stress object, collect to object muscle name, and intensities
          // it has in the training session
          var duplicate_session_muscles = [];
-         var muscle_intensities = {}
+         var muscle_intensities = {};
          for (i = 0; i < list_of_movelists.length; i++) {
             list_of_movelists[i].forEach(el => {
-               duplicate_session_muscles.push(el)
+               duplicate_session_muscles.push(el);
                if (muscle_intensities.hasOwnProperty(el)) {
-                  muscle_intensities[el].push(session_intensity_levels[i])
+                  muscle_intensities[el].push(session_intensity_levels[i]);
                } else {
-                  muscle_intensities[el] = [session_intensity_levels[i]]
+                  muscle_intensities[el] = [session_intensity_levels[i]];
                }
             });
          }
@@ -143,16 +143,16 @@ var random_session = function (selector, $, blocks, session_types) {
          // form d3-dataobject from muscle stress object
          var vdata = [];
          for (let key in muscle_intensities) {
-            vdata.push({"muscle":key, "count":muscle_intensities[key].length, "maxintensity":Math.max.apply(Math, muscle_intensities[key])})
+            vdata.push({"muscle":key, "count":muscle_intensities[key].length, "maxintensity":Math.max.apply(Math, muscle_intensities[key])});
          }; 
 
          // var example_data = [{"muscle":"moi", "count":30},
          generate_bubblechart("#gs_div", vdata);
          
          savecookies([{"id":"smi", "l":session_move_indices}, {"id":"sil", "l":session_intensity_levels},
-                      {"id":"ilc", "l":intensity_level_count}, {"id":"maxmoves", "l":maxmoves}], 1);
+                      {"id":"ilc", "l":intensity_level_count}, {"id":"max_blocks", "l":max_blocks}], 1);
 
-         $("#gs_div").show(700)
+         $("#gs_div").show(700);
       }
 
       function calculate_intensity(maxmoves, intensity_levels, intensity_level_count) {
@@ -160,10 +160,10 @@ var random_session = function (selector, $, blocks, session_types) {
          
          var sum_intensity = 0
          for (i = 0; i < intensity_levels.length; i++) {
-            sum_intensity += intensity_levels[i] + 1
+            sum_intensity += intensity_levels[i] + 1;
          }
          
-         return Math.floor(sum_intensity*100/((maxmoves-1)*intensity_level_count))
+         return Math.floor(sum_intensity*100/((maxmoves-1)*intensity_level_count));
       }
 
       function count_in_array(array, what) {
@@ -191,27 +191,28 @@ var random_session = function (selector, $, blocks, session_types) {
 
       function rand_int(parameterint) {
          // return random integer from 0..parameterint-1
-         return Math.floor((Math.random() * parameterint))
+         return Math.floor((Math.random() * parameterint));
       }
 
-      function calc_unique_elements(listobject) {
+      function calc_unique_elements(my_list) {
          // Return list of unique elements appear in the list
-         
+
          var all_elements = []
-         for (i = 0; i < listobject.length; i++) {
-            all_elements = all_elements.concat(listobject[i][1])
+         for (i = 0; i < my_list.length; i++) {
+            all_elements = all_elements.concat(my_list[i]);
          }
 
          // calculate all unique elements
-         return(Array.from(new Set(all_elements)))
+         return(Array.from(new Set(all_elements)));
       }
 
       function get_nested_list(list_of_lists, elnum) {
          // this will return the [[a, [], x], [b, c, d]
+         // where elnum 2 will return list [x, d]
          // a bit of a shitty solution, rework needed
-         var newlist = []
+         var newlist = [];
          list_of_lists.forEach(element => {
-            newlist.push(element[elnum])
+            newlist.push(element[elnum]);
          });
          return newlist;
       }
@@ -285,11 +286,11 @@ var random_session = function (selector, $, blocks, session_types) {
          var expiresattrib = new Date(Date.now() + days*60*60*24*1000 );
          lists_to_store.forEach( el => {
             if (Array.isArray(el.l)) {
-               str = el.l.join()
+               str = el.l.join();
             } else {
                str = el.l;
             }
-            var cookiestr = el.id + "=" + str + ";expires=" + expiresattrib + ";"
+            var cookiestr = el.id + "=" + str + ";expires=" + expiresattrib + ";";
             document.cookie = cookiestr;
          });
       }
@@ -303,7 +304,7 @@ var random_session = function (selector, $, blocks, session_types) {
          var svg = d3.select(element).append("svg")
                      .attr("height", height)
                      .attr("width", width)
-                     .attr("viewBox", [0, 0, width, height])
+                     .attr("viewBox", [0, 0, width, height]);
 
          var circles = svg.selectAll("circle")
                      .data(vdata)
@@ -332,28 +333,28 @@ var random_session = function (selector, $, blocks, session_types) {
             .force("x", d3.forceX(width/2).strength(0.05))
             .force("y", d3.forceY(height/2).strength(0.05))
             .force("collide", d3.forceCollide(function(d) {
-               return ballsize*Math.pow(1.6, d.count-1) + 1
+               return ballsize*Math.pow(1.6, d.count-1) + 1;
               // return d.count*ballsize + 1
             }))
 
         simulation.nodes(vdata)
-            .on("tick", ticked)
+            .on("tick", ticked);
 
          function ticked() {
             circles
                .attr("cx", function(d) {
-                  return d.x
+                  return d.x;
                })
                .attr("cy", function(d) {
-                  return d.y
+                  return d.y;
                });
 
             texts
                .attr("x", function (d) {
-                  return d.x
+                  return d.x;
               })
               .attr("y", function (d) {
-                  return d.y
+                  return d.y;
               });
          }
 
