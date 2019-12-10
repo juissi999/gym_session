@@ -39,7 +39,7 @@ var random_session = function (selector, $, blocks, session_types) {
          savecookies([{"id":"darkmode", "l":darkmodeon}]);
       }
 
-      // make a temporary copy of all moves that we will cut down
+      // make a temporary copy of block database that we will cut down
       var available_blocks = blocks.slice();
 
       // clickfunction for randomizer button
@@ -54,7 +54,6 @@ var random_session = function (selector, $, blocks, session_types) {
          display_session(str2int_list(loaded_cookies["smi"]), str2int_list(loaded_cookies["sil"]),
                                       Number(loaded_cookies["ilc"]), Number(loaded_cookies["max_blocks"]));
       }
-
 
       if ("darkmode" in loaded_cookies) {
          if (loaded_cookies["darkmode"]=="true"){
@@ -97,7 +96,7 @@ var random_session = function (selector, $, blocks, session_types) {
             pagestr += "REST! Go to McDonalds.<br>";
          } else {
             pagestr += "<table>";
-            for (i = 0; i < session_moves.length; i++) {;
+            for (i = 0; i < session_moves.length; i++) {
                pagestr += "<tr><td>";
                pagestr += session_types[session_intensity_levels[i]];
                pagestr += "</td><td>";
@@ -300,6 +299,7 @@ var random_session = function (selector, $, blocks, session_types) {
          var width = 300;
          var height = 300;
          var ballsize = 30;
+         var power = 1.55;
 
          var svg = d3.select(element).append("svg")
                      .attr("height", height)
@@ -310,7 +310,7 @@ var random_session = function (selector, $, blocks, session_types) {
                      .data(vdata)
                      .enter().append("circle")
  //                   .attr("r", function (d) {return d.count*ballsize })
-                     .attr("r", function (d) { return ballsize*Math.pow(1.6, d.count-1)})
+                     .attr("r", function (d) { return ballsize*Math.pow(power, d.count-1)})
                      .style("fill", function (d) {
                         if (d.maxintensity == 0) {
                            return "lightgreen"
@@ -327,17 +327,17 @@ var random_session = function (selector, $, blocks, session_types) {
                      .text(function (d) {
                         return d.muscle;
                      })
-                     .attr("text-anchor", "middle")
+                     .attr("text-anchor", "middle");
 
          var simulation = d3.forceSimulation()
             .force("x", d3.forceX(width/2).strength(0.05))
             .force("y", d3.forceY(height/2).strength(0.05))
             .force("collide", d3.forceCollide(function(d) {
-               return ballsize*Math.pow(1.6, d.count-1) + 1;
+               return ballsize*Math.pow(power, d.count-1) + 1;
               // return d.count*ballsize + 1
             }))
 
-        simulation.nodes(vdata)
+         simulation.nodes(vdata)
             .on("tick", ticked);
 
          function ticked() {
@@ -357,9 +357,6 @@ var random_session = function (selector, $, blocks, session_types) {
                   return d.y;
               });
          }
-
       }
-
    }
-
 }
