@@ -1,5 +1,5 @@
 // database:[movename, list_of_muscles_involved]
-var moves = [
+module.exports.moves = [
   ["penkkipunnerrus", ["ojentajat", "rinta"]],
   ["hauiskääntö", ["hauis"]],
   ["penkkipunnerrus ojentajat", ["ojentajat"]],
@@ -32,4 +32,4 @@ var moves = [
   ["vatsalihakset kierto laitteella", ["kyljet"]]];
 
 // put these in ascending order of intensity
-var series = ["3x15", "3x10", "5x5"];
+module.exports.series = ["3x15", "3x10", "5x5"];

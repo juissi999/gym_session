@@ -1,4 +1,6 @@
-var random_session = function (selector, $, blocks, session_types) {
+const $ = require("jquery")
+
+module.exports = function (selector, blocks, session_types) {
    // Js app that lets the user randomize a session.
    // Selector is the element selector of where app is placed,
    // $ is jquery, blocks is list of lists of 

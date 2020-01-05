@@ -1,0 +1,31 @@
+{
+  "name": "gym_session",
+  "version": "0.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack src/app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/juissi999/gym_session.git"
+  },
+  "keywords": [
+    "gym",
+    "session"
+  ],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/juissi999/gym_session/issues"
+  },
+  "homepage": "https://github.com/juissi999/gym_session#readme",
+  "devDependencies": {
+    "webpack": "^4.41.5",
+    "webpack-cli": "^3.3.10"
+  },
+  "dependencies": {
+    "jquery": "^3.4.1"
+  }
+}
