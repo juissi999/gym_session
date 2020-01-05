@@ -294,21 +294,25 @@ module.exports = function (selector, blocks, session_types) {
 
    function generate_bubblechart(element, vdata) {
       // make a bubble chart d3 visualization
-      var width = 300;
-      var height = 300;
-      var ballsize = 30;
-      var power = 1.55;
+      var width = 300
+      var height = 300
+      var ballsize = 30
+
+      // function for inverse transformation of area pi*r^2
+      function calc_r (count) {
+         return ballsize*Math.sqrt(count)
+      }
 
       var svg = d3.select(element).append("svg")
                   .attr("height", height)
                   .attr("width", width)
-                  .attr("viewBox", [0, 0, width, height]);
+                  .attr("viewBox", [0, 0, width, height])
 
       var circles = svg.selectAll("circle")
                   .data(vdata)
                   .enter().append("circle")
 //                   .attr("r", function (d) {return d.count*ballsize })
-                  .attr("r", function (d) { return ballsize*Math.pow(power, d.count-1)})
+                  .attr("r", function (d) { return calc_r(d.count) })
                   .style("fill", function (d) {
                      if (d.maxintensity == 0) {
                         return "lightgreen"
@@ -325,35 +329,35 @@ module.exports = function (selector, blocks, session_types) {
                   .text(function (d) {
                      return d.muscle;
                   })
-                  .attr("text-anchor", "middle");
+                  .attr("text-anchor", "middle")
 
       var simulation = d3.forceSimulation()
          .force("x", d3.forceX(width/2).strength(0.05))
          .force("y", d3.forceY(height/2).strength(0.05))
          .force("collide", d3.forceCollide(function(d) {
-            return ballsize*Math.pow(power, d.count-1) + 1;
+            return calc_r(d.count) + 1;
             // return d.count*ballsize + 1
          }))
 
       simulation.nodes(vdata)
-         .on("tick", ticked);
+         .on("tick", ticked)
 
       function ticked() {
          circles
             .attr("cx", function(d) {
-               return d.x;
+               return d.x
             })
             .attr("cy", function(d) {
-               return d.y;
-            });
+               return d.y
+            })
 
          texts
             .attr("x", function (d) {
-               return d.x;
+               return d.x
             })
             .attr("y", function (d) {
-               return d.y;
-            });
+               return d.y
+            })
       }
    }
 
