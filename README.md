@@ -1,6 +1,21 @@
 # gym_session
-A tool to create a balanced training session on the go. Thanks for @henu for the original idea. Needed for gym practice!
+A tool to create a balanced training session on the go. Thanks for @henu for the original idea.
 
+## Installation
+
+On command line, type:
+
+`git clone https://github.com/juissi999/gym_session.git`
+
+install dependencies with
+
+`npm install`
+
+build site by running
+
+`npm run build`
+
+When build has finished, open index.html in your browser.
 
 
 ## Demo
@@ -22,10 +37,12 @@ TODO:
 * Unit tests, this software is for real training use so it needs to work.
 
 
-
 ## Technologies used
 
+* css
+* html
+* cookies
+* npm
+* webpack
 * jQuery
 * D3.js
-* cookies
-* css
