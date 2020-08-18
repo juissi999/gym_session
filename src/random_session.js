@@ -292,12 +292,19 @@ module.exports = function (selector, blocks, session_types) {
       });
    }
 
-   function generate_bubblechart(element, vdata) {
+  function generate_bubblechart (element, data) {
       // make a bubble chart d3 visualization
       var width = 300
       var height = 300
       var ballsize = 30
 
+    const vdata = data.map(d => {
+      return {
+        ...d,
+        x: Math.random() * width,
+        y: Math.random() * height
+      }
+    })
       // function for inverse transformation of area pi*r^2
       function calc_r (count) {
          return ballsize*Math.sqrt(count)
