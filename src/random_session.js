@@ -10,30 +10,37 @@ module.exports = function (selector, blocks, session_types) {
   // ascending in intensity.
 
   // generate control-buttons
-  $(selector).append(
-    '<input id="randb" type="button" value="Random workout"></input>'
-  ) // ; margin-bottom:7px
-  $(selector).append('<input id="dmodeb" type="button" value="D"></input>')
-  $(selector).append('<div id="gs_div"></div>')
+  const btn = document.createElement('BUTTON')
+  btn.innerHTML = 'Random workout'
+  document.body.appendChild(btn)
+  btn.onclick = () => {
+    $('#gs_div').hide(700, randbutton_hide_callback)
+  }
 
-  $('#dmodeb').click(function () {
+  const btn2 = document.createElement('BUTTON')
+  btn2.innerHTML = 'D'
+  document.body.appendChild(btn2)
+  btn2.onclick = () => {
     // change darkmode state
     darkmodeon = !darkmodeon
     set_darkmode()
-  })
+  }
+
+  const div = document.createElement('div')
+  div.id = 'gs_div'
+  document.body.appendChild(div)
 
   // default darkmode
-  var darkmodeon = false
+  let darkmodeon = false
   function set_darkmode () {
-    var dbutton = $('#dmodeb')
     if (darkmodeon) {
       // if dark mode set to on
-      dbutton.val('L')
-      $(selector).addClass('darktheme')
+      btn2.innerHTML = 'L'
+      document.body.classList.add('darktheme')
       darkmodeon = true
     } else {
-      dbutton.val('D')
-      $(selector).removeClass('darktheme')
+      btn2.innerHTML = 'D'
+      document.body.classList.remove('darktheme')
       darkmodeon = false
     }
     savecookies([{ id: 'darkmode', l: darkmodeon }])
@@ -41,11 +48,6 @@ module.exports = function (selector, blocks, session_types) {
 
   // make a temporary copy of block database that we will cut down
   var available_blocks = blocks.slice()
-
-  // clickfunction for randomizer button
-  $('#randb').click(function () {
-    $('#gs_div').hide(700, randbutton_hide_callback)
-  })
 
   // cookie stuff
   // check if loaded cookies contain previous session
@@ -74,12 +76,12 @@ module.exports = function (selector, blocks, session_types) {
   }
 
   function randbutton_hide_callback () {
-    var max_blocks = 10
+    const max_blocks = 10
     // random how many blocks to include in this session
-    var block_count = rand_int(max_blocks)
+    const block_count = rand_int(max_blocks)
 
     // how many different session types are found
-    var session_type_count = session_types.length
+    const session_type_count = session_types.length
 
     // generate workout
     const [session_move_indices, session_intensity_levels] = generate_workout(

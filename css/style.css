@@ -1,23 +1,23 @@
 body {
-   font-family:Helvetica, Arial, sans-serif;
-   background-color: white;
-   margin: 10px;
-   fill: black;
+  font-family: Helvetica, Arial, sans-serif;
+  background-color: white;
+  margin: 10px;
+  fill: black;
 }
 
 svg {
-   font-size:15;
+  font-size: 15;
 }
 
-input[type="button"] {
-   font-size: 18px;
-   margin-right:8px;
+button {
+  font-size: 18px;
+  margin-right: 8px;
 }
 
 .darktheme {
-   background-color: #333;
-   color: #fff;
-   fill: black;
+  background-color: #333;
+  color: #fff;
+  fill: black;
 }
 
 .darktheme svg {
@@ -27,9 +27,9 @@ input[type="button"] {
 }
 
 .options {
-   margin-right:200px;
+  margin-right: 200px;
 }
 
 .element_divider {
-   height:7px;
+  height: 7px;
 }
