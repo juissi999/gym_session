@@ -107,16 +107,14 @@ module.exports = function (selector, blocks, session_types) {
     session_moves = index_with_array(available_blocks, session_move_indices)
 
     // calculate muscle coverage things
-    var all_block_impacts = calc_unique_elements(get_nested_list(blocks, 1))
-    var impacts_in_session = calc_unique_elements(
+    const all_block_impacts = calc_unique_elements(get_nested_list(blocks, 1))
+    const impacts_in_session = calc_unique_elements(
       get_nested_list(session_moves, 1)
     )
-    var coverage = impacts_in_session.length / all_block_impacts.length
+    const coverage = impacts_in_session.length / all_block_impacts.length
 
     // print page
-    var element_divider = '<div class="element_divider"></div>'
-
-    var pagestr = element_divider
+    var pagestr = '<div class="boxitem">'
     if (session_move_indices.length == 0) {
       pagestr += 'REST! Go to McDonalds.<br>'
     } else {
@@ -137,7 +135,7 @@ module.exports = function (selector, blocks, session_types) {
     // pagestr += "<br><br>"
     // pagestr += "All muscles in database:<br>"
     // pagestr += print_list(all_muscles)
-    pagestr += element_divider
+    pagestr += '</div><div class="boxitem">'
     pagestr += 'Muscle coverage: ' + Math.floor(coverage * 100).toString() + '%'
     pagestr += '<br>'
     pagestr +=
@@ -150,7 +148,7 @@ module.exports = function (selector, blocks, session_types) {
       '%<br>'
 
     // this extra br because svg added
-    pagestr += element_divider
+    pagestr += '</div>'
     document.getElementById('gs_div').innerHTML = pagestr
 
     // take the second value (muscles) from nested lists in database
@@ -366,6 +364,7 @@ module.exports = function (selector, blocks, session_types) {
       .select(element)
       .append('svg')
       .attr('height', height)
+      .attr('class', 'boxitem')
       .attr('width', width)
       .attr('viewBox', [0, 0, width, height])
 
