@@ -1,4 +1,3 @@
-const $ = require('jquery')
 const d3 = require('d3')
 
 module.exports = function (selector, blocks, session_types) {
@@ -14,7 +13,9 @@ module.exports = function (selector, blocks, session_types) {
   btn.innerHTML = 'Random workout'
   document.body.appendChild(btn)
   btn.onclick = () => {
-    $('#gs_div').hide(700, randbutton_hide_callback)
+    div.classList.remove('visible')
+    div.classList.add('hidden')
+    div.addEventListener('transitionend', randbutton_hide_callback)
   }
 
   const btn2 = document.createElement('BUTTON')
@@ -28,6 +29,7 @@ module.exports = function (selector, blocks, session_types) {
 
   const div = document.createElement('div')
   div.id = 'gs_div'
+  div.classList.add('visible')
   document.body.appendChild(div)
 
   // default darkmode
@@ -76,6 +78,10 @@ module.exports = function (selector, blocks, session_types) {
   }
 
   function randbutton_hide_callback () {
+    div.removeEventListener('transitionend', randbutton_hide_callback)
+    div.classList.remove('hidden')
+    div.classList.add('visible')
+
     const max_blocks = 10
     // random how many blocks to include in this session
     const block_count = rand_int(max_blocks)
@@ -149,7 +155,7 @@ module.exports = function (selector, blocks, session_types) {
 
     // this extra br because svg added
     pagestr += '</div>'
-    document.getElementById('gs_div').innerHTML = pagestr
+    div.innerHTML = pagestr
 
     // take the second value (muscles) from nested lists in database
     list_of_movelists = get_nested_list(session_moves, 1)
@@ -191,8 +197,6 @@ module.exports = function (selector, blocks, session_types) {
       ],
       1
     )
-
-    $('#gs_div').show(700)
   }
 
   function calculate_intensity (

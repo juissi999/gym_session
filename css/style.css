@@ -26,6 +26,24 @@ button {
   fill: black;
 }
 
+.hidden {
+  /* border-style: solid;
+  border-width: 1px;
+  max-height: 0px; 
+  transition: max-height 1s; */
+  opacity: 0;
+  transition: opacity 1s;
+}
+
+.visible {
+  /* max-height: 400px;
+  border-style: solid;
+  border-width: 1px; 
+  transition: max-height 1s; */
+  opacity: 1;
+  transition: opacity 1s;
+}
+
 .options {
   margin-right: 200px;
 }
