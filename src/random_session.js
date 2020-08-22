@@ -3,7 +3,7 @@ const d3 = require('d3')
 module.exports = function (selector, blocks, session_types) {
   // Js app that lets the user randomize a session.
   // Selector is the element selector of where app is placed,
-  // $ is jquery, blocks is list of lists of
+  // blocks is list of lists of
   // [block_name, [block_impacts_to1, block_impacts_to2, ...]],
   // session_types is a list of session types e.g. ["5min", "10min", "15min"]
   // ascending in intensity.
@@ -11,7 +11,7 @@ module.exports = function (selector, blocks, session_types) {
   // generate control-buttons
   const btn = document.createElement('BUTTON')
   btn.innerHTML = 'Random workout'
-  document.body.appendChild(btn)
+  document.getElementById(selector).appendChild(btn)
   btn.onclick = () => {
     div.classList.remove('visible')
     div.classList.add('hidden')
@@ -20,7 +20,7 @@ module.exports = function (selector, blocks, session_types) {
 
   const btn2 = document.createElement('BUTTON')
   btn2.innerHTML = 'D'
-  document.body.appendChild(btn2)
+  document.getElementById(selector).appendChild(btn2)
   btn2.onclick = () => {
     // change darkmode state
     darkmodeon = !darkmodeon
@@ -30,7 +30,7 @@ module.exports = function (selector, blocks, session_types) {
   const div = document.createElement('div')
   div.id = 'gs_div'
   div.classList.add('visible')
-  document.body.appendChild(div)
+  document.getElementById(selector).appendChild(div)
 
   // default darkmode
   let darkmodeon = false
