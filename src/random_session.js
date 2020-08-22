@@ -32,6 +32,18 @@ module.exports = function (selector, blocks, session_types) {
   div.classList.add('visible')
   document.getElementById(selector).appendChild(div)
 
+  const movesDiv = document.createElement('div')
+  movesDiv.classList.add('boxitem')
+  div.appendChild(movesDiv)
+
+  const summaryDiv = document.createElement('div')
+  summaryDiv.classList.add('boxitem')
+  div.appendChild(summaryDiv)
+
+  const d3chart = document.createElement('div')
+  d3chart.id = 'd3Chart'
+  div.appendChild(d3chart)
+
   // default darkmode
   let darkmodeon = false
   function set_darkmode () {
@@ -120,7 +132,7 @@ module.exports = function (selector, blocks, session_types) {
     const coverage = impacts_in_session.length / all_block_impacts.length
 
     // print page
-    var pagestr = '<div class="boxitem">'
+    let pagestr = ''
     if (session_move_indices.length == 0) {
       pagestr += 'REST! Go to McDonalds.<br>'
     } else {
@@ -134,14 +146,14 @@ module.exports = function (selector, blocks, session_types) {
       }
       pagestr += '</table>'
     }
-
+    movesDiv.innerHTML = pagestr
     // pagestr += "<br><br>"
     // pagestr += "Muscles in this session:<br>"
     // pagestr += print_list(muscles_in_session)
     // pagestr += "<br><br>"
     // pagestr += "All muscles in database:<br>"
     // pagestr += print_list(all_muscles)
-    pagestr += '</div><div class="boxitem">'
+    pagestr = ''
     pagestr += 'Muscle coverage: ' + Math.floor(coverage * 100).toString() + '%'
     pagestr += '<br>'
     pagestr +=
@@ -153,9 +165,7 @@ module.exports = function (selector, blocks, session_types) {
       ).toString() +
       '%<br>'
 
-    // this extra br because svg added
-    pagestr += '</div>'
-    div.innerHTML = pagestr
+    summaryDiv.innerHTML = pagestr
 
     // take the second value (muscles) from nested lists in database
     list_of_movelists = get_nested_list(session_moves, 1)
@@ -186,7 +196,7 @@ module.exports = function (selector, blocks, session_types) {
     }
 
     // var example_data = [{"muscle":"moi", "count":30},
-    generate_bubblechart('#gs_div', vdata)
+    generate_bubblechart('#d3Chart', vdata)
 
     savecookies(
       [
@@ -364,6 +374,7 @@ module.exports = function (selector, blocks, session_types) {
       return ballsize * Math.sqrt(count)
     }
 
+    d3.select(element).html('')
     var svg = d3
       .select(element)
       .append('svg')
