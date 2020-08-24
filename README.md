@@ -1,4 +1,5 @@
 # gym_session
+
 A tool to create a balanced training session on the go. Thanks for @henu for the original idea.
 
 ## Installation
@@ -17,14 +18,11 @@ build site by running
 
 When build has finished, open index.html in your browser.
 
-
 ## Demo
 
 NOTE! Use at your own risk and only if you know what you are doing on gym.
 
 <https://juissi999.github.io/gym_session/>
-
-
 
 ## Mathematical model
 
@@ -32,17 +30,16 @@ The idea of the first version is to create a stateless no-memory website that wi
 
 TODO:
 
-* Test runs to see how the muscle groups are balanced if e.g. 100 000 sessions are simulated
-* Real database with a source for muscles
-* Unit tests, this software is for real training use so it needs to work.
-
+- Test runs to see how the muscle groups are balanced if e.g. 100 000 sessions are simulated
+- Real database with a source for muscles
+- Unit tests, this software is for real training use so it needs to work.
 
 ## Technologies used
 
-* css
-* html
-* cookies
-* npm
-* webpack
-* jQuery
-* D3.js
+- css
+- html
+- ES6 JavaScript
+- cookies
+- npm
+- webpack
+- D3.js

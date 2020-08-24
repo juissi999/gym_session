@@ -1,6 +1,6 @@
 const d3 = require('d3')
 
-module.exports = function (selector, blocks, session_types) {
+module.exports = (selector, blocks, session_types) => {
   // Js app that lets the user randomize a session.
   // Selector is the element selector of where app is placed,
   // blocks is list of lists of
@@ -8,45 +8,7 @@ module.exports = function (selector, blocks, session_types) {
   // session_types is a list of session types e.g. ["5min", "10min", "15min"]
   // ascending in intensity.
 
-  // generate control-buttons
-  const btn = document.createElement('BUTTON')
-  btn.innerHTML = 'Random workout'
-  document.getElementById(selector).appendChild(btn)
-  btn.onclick = () => {
-    div.classList.remove('visible')
-    div.classList.add('hidden')
-    div.addEventListener('transitionend', randbutton_hide_callback)
-  }
-
-  const btn2 = document.createElement('BUTTON')
-  btn2.innerHTML = 'D'
-  document.getElementById(selector).appendChild(btn2)
-  btn2.onclick = () => {
-    // change darkmode state
-    darkmodeon = !darkmodeon
-    set_darkmode()
-  }
-
-  const div = document.createElement('div')
-  div.id = 'gs_div'
-  div.classList.add('visible')
-  document.getElementById(selector).appendChild(div)
-
-  const movesDiv = document.createElement('div')
-  movesDiv.classList.add('boxitem')
-  div.appendChild(movesDiv)
-
-  const summaryDiv = document.createElement('div')
-  summaryDiv.classList.add('boxitem')
-  div.appendChild(summaryDiv)
-
-  const d3chart = document.createElement('div')
-  d3chart.id = 'd3Chart'
-  div.appendChild(d3chart)
-
-  // default darkmode
-  let darkmodeon = false
-  function set_darkmode () {
+  const set_darkmode = () => {
     if (darkmodeon) {
       // if dark mode set to on
       btn2.innerHTML = 'L'
@@ -60,36 +22,7 @@ module.exports = function (selector, blocks, session_types) {
     savecookies([{ id: 'darkmode', l: darkmodeon }])
   }
 
-  // make a temporary copy of block database that we will cut down
-  var available_blocks = blocks.slice()
-
-  // cookie stuff
-  // check if loaded cookies contain previous session
-  var loaded_cookies = loadcookies()
-  if (
-    'smi' in loaded_cookies &&
-    'sil' in loaded_cookies &&
-    'ilc' in loaded_cookies &&
-    'max_blocks' in loaded_cookies
-  ) {
-    display_session(
-      str2int_list(loaded_cookies['smi']),
-      str2int_list(loaded_cookies['sil']),
-      Number(loaded_cookies['ilc']),
-      Number(loaded_cookies['max_blocks'])
-    )
-  }
-
-  if ('darkmode' in loaded_cookies) {
-    if (loaded_cookies['darkmode'] == 'true') {
-      darkmodeon = true
-    } else if (loaded_cookies['darkmode'] == 'false') {
-      darkmodeon = false
-    }
-    set_darkmode()
-  }
-
-  function randbutton_hide_callback () {
+  const randbutton_hide_callback = () => {
     div.removeEventListener('transitionend', randbutton_hide_callback)
     div.classList.remove('hidden')
     div.classList.add('visible')
@@ -115,12 +48,12 @@ module.exports = function (selector, blocks, session_types) {
     )
   }
 
-  function display_session (
+  const display_session = (
     session_move_indices,
     session_intensity_levels,
     intensity_level_count,
     max_blocks
-  ) {
+  ) => {
     // map the move_indices to moves
     session_moves = index_with_array(available_blocks, session_move_indices)
 
@@ -209,11 +142,11 @@ module.exports = function (selector, blocks, session_types) {
     )
   }
 
-  function calculate_intensity (
+  const calculate_intensity = (
     maxmoves,
     intensity_levels,
     intensity_level_count
-  ) {
+  ) => {
     // calculate workout intensity, how many series and how intense they are from max
 
     var sum_intensity = 0
@@ -226,7 +159,7 @@ module.exports = function (selector, blocks, session_types) {
     )
   }
 
-  function count_in_array (array, what) {
+  const count_in_array = (array, what) => {
     // return how many times an item appears on an array
     // thanks for someone in stackoverflow for letting me go sleep
 
@@ -239,22 +172,22 @@ module.exports = function (selector, blocks, session_types) {
     return count
   }
 
-  function index_with_array (data_array, indexing_array) {
+  const index_with_array = (data_array, indexing_array) => {
     // return a new array with elements[indexing_array] from data_ararray
     var newarray = []
 
-    indexing_array.forEach(function (item) {
+    indexing_array.forEach(item => {
       newarray.push(data_array[item])
     })
     return newarray
   }
 
-  function rand_int (parameterint) {
+  const rand_int = parameterint => {
     // return random integer from 0..parameterint-1
     return Math.floor(Math.random() * parameterint)
   }
 
-  function calc_unique_elements (my_list) {
+  const calc_unique_elements = my_list => {
     // Return list of unique elements appear in the list
 
     var all_elements = []
@@ -266,7 +199,7 @@ module.exports = function (selector, blocks, session_types) {
     return Array.from(new Set(all_elements))
   }
 
-  function get_nested_list (list_of_lists, elnum) {
+  const get_nested_list = (list_of_lists, elnum) => {
     // this will return the [[a, [], x], [b, c, d]
     // where elnum 2 will return list [x, d]
     // a bit of a shitty solution, rework needed
@@ -277,7 +210,7 @@ module.exports = function (selector, blocks, session_types) {
     return newlist
   }
 
-  function print_list (list_to_print) {
+  const print_list = list_to_print => {
     // return a string of a list so that there is break between elements
     var print_literal = ''
     for (i = 0; i < list_to_print.length; i++) {
@@ -286,7 +219,7 @@ module.exports = function (selector, blocks, session_types) {
     return print_literal
   }
 
-  function generate_workout (len_movedb, movecount, intensity_level_count) {
+  const generate_workout = (len_movedb, movecount, intensity_level_count) => {
     // generate workout, randomize move integers and intensity levels
     var session_moves = []
     var session_intensity_levels = []
@@ -304,7 +237,7 @@ module.exports = function (selector, blocks, session_types) {
     return [session_moves, session_intensity_levels]
   }
 
-  function loadcookies () {
+  const loadcookies = () => {
     // cut cookies off of each other
     var cookies = document.cookie.split(';')
 
@@ -324,7 +257,7 @@ module.exports = function (selector, blocks, session_types) {
     return loaded_cookies
   }
 
-  function str2int_list (inputlist) {
+  const str2int_list = inputlist => {
     // transform a list of "string-numbers" to list of int numbers
 
     // check that the input is actually a list and not empty string (bugfix)
@@ -340,7 +273,7 @@ module.exports = function (selector, blocks, session_types) {
     return integervalues
   }
 
-  function savecookies (lists_to_store, days) {
+  const savecookies = (lists_to_store, days) => {
     // save session for cookie for one day
     // expects a list of objects where "id" is id, and "l" is list of elements
     var expiresattrib = new Date(Date.now() + days * 60 * 60 * 24 * 1000)
@@ -355,7 +288,7 @@ module.exports = function (selector, blocks, session_types) {
     })
   }
 
-  function generate_bubblechart (element, data) {
+  const generate_bubblechart = (element, data) => {
     // make a bubble chart d3 visualization
     var width = 300
     var height = 300
@@ -370,7 +303,7 @@ module.exports = function (selector, blocks, session_types) {
     })
 
     // function for inverse transformation of area pi*r^2
-    function calc_r (count) {
+    const calc_r = count => {
       return ballsize * Math.sqrt(count)
     }
 
@@ -389,10 +322,8 @@ module.exports = function (selector, blocks, session_types) {
       .enter()
       .append('circle')
       //                   .attr("r", function (d) {return d.count*ballsize })
-      .attr('r', function (d) {
-        return calc_r(d.count)
-      })
-      .style('fill', function (d) {
+      .attr('r', d => calc_r(d.count))
+      .style('fill', d => {
         if (d.maxintensity == 0) {
           return 'lightgreen'
         } else if (d.maxintensity == 1) {
@@ -407,10 +338,13 @@ module.exports = function (selector, blocks, session_types) {
       .data(vdata)
       .enter()
       .append('text')
-      .text(function (d) {
-        return d.muscle
-      })
+      .text(d => d.muscle)
       .attr('text-anchor', 'middle')
+
+    const ticked = () => {
+      circles.attr('cx', d => d.x).attr('cy', d => d.y)
+      texts.attr('x', d => d.x).attr('y', d => d.y)
+    }
 
     var simulation = d3
       .forceSimulation()
@@ -418,30 +352,77 @@ module.exports = function (selector, blocks, session_types) {
       .force('y', d3.forceY(height / 2).strength(0.05))
       .force(
         'collide',
-        d3.forceCollide(function (d) {
-          return calc_r(d.count) + 1
-          // return d.count*ballsize + 1
-        })
+        d3.forceCollide(d => calc_r(d.count) + 1)
       )
 
     simulation.nodes(vdata).on('tick', ticked)
+  }
 
-    function ticked () {
-      circles
-        .attr('cx', function (d) {
-          return d.x
-        })
-        .attr('cy', function (d) {
-          return d.y
-        })
+  // generate control-buttons
+  const btn = document.createElement('BUTTON')
+  btn.innerHTML = 'Random workout'
+  document.getElementById(selector).appendChild(btn)
+  btn.onclick = () => {
+    div.classList.remove('visible')
+    div.classList.add('hidden')
+    div.addEventListener('transitionend', randbutton_hide_callback)
+  }
 
-      texts
-        .attr('x', function (d) {
-          return d.x
-        })
-        .attr('y', function (d) {
-          return d.y
-        })
+  const btn2 = document.createElement('BUTTON')
+  btn2.innerHTML = 'D'
+  document.getElementById(selector).appendChild(btn2)
+  btn2.onclick = () => {
+    // change darkmode state
+    darkmodeon = !darkmodeon
+    set_darkmode()
+  }
+
+  const div = document.createElement('div')
+  div.id = 'gs_div'
+  div.classList.add('visible')
+  document.getElementById(selector).appendChild(div)
+
+  const movesDiv = document.createElement('div')
+  movesDiv.classList.add('boxitem')
+  div.appendChild(movesDiv)
+
+  const summaryDiv = document.createElement('div')
+  summaryDiv.classList.add('boxitem')
+  div.appendChild(summaryDiv)
+
+  const d3chart = document.createElement('div')
+  d3chart.id = 'd3Chart'
+  div.appendChild(d3chart)
+
+  // default darkmode
+  let darkmodeon = false
+
+  // make a temporary copy of block database that we will cut down
+  var available_blocks = blocks.slice()
+
+  // cookie stuff
+  // check if loaded cookies contain previous session
+  var loaded_cookies = loadcookies()
+  if (
+    'smi' in loaded_cookies &&
+    'sil' in loaded_cookies &&
+    'ilc' in loaded_cookies &&
+    'max_blocks' in loaded_cookies
+  ) {
+    display_session(
+      str2int_list(loaded_cookies['smi']),
+      str2int_list(loaded_cookies['sil']),
+      Number(loaded_cookies['ilc']),
+      Number(loaded_cookies['max_blocks'])
+    )
+  }
+
+  if ('darkmode' in loaded_cookies) {
+    if (loaded_cookies['darkmode'] == 'true') {
+      darkmodeon = true
+    } else if (loaded_cookies['darkmode'] == 'false') {
+      darkmodeon = false
     }
+    set_darkmode()
   }
 }
