@@ -1,4 +1,4 @@
-const d3 = require('d3')
+const charts = require('./chart.js')
 
 module.exports = (selector, blocks, session_types) => {
   // Js app that lets the user randomize a session.
@@ -105,8 +105,8 @@ module.exports = (selector, blocks, session_types) => {
 
     // form muscle stress object, collect to object muscle name, and intensities
     // it has in the training session
-    var duplicate_session_muscles = []
-    var muscle_intensities = {}
+    let duplicate_session_muscles = []
+    let muscle_intensities = {}
     for (i = 0; i < list_of_movelists.length; i++) {
       list_of_movelists[i].forEach(el => {
         duplicate_session_muscles.push(el)
@@ -119,7 +119,7 @@ module.exports = (selector, blocks, session_types) => {
     }
 
     // form d3-dataobject from muscle stress object
-    var vdata = []
+    let vdata = []
     for (let key in muscle_intensities) {
       vdata.push({
         muscle: key,
@@ -128,8 +128,7 @@ module.exports = (selector, blocks, session_types) => {
       })
     }
 
-    // var example_data = [{"muscle":"moi", "count":30},
-    generate_bubblechart('#d3Chart', vdata)
+    charts.bubblechart('#d3Chart', vdata, 300, 300, 30)
 
     savecookies(
       [
@@ -149,10 +148,10 @@ module.exports = (selector, blocks, session_types) => {
   ) => {
     // calculate workout intensity, how many series and how intense they are from max
 
-    var sum_intensity = 0
-    for (i = 0; i < intensity_levels.length; i++) {
-      sum_intensity += intensity_levels[i] + 1
-    }
+    let sum_intensity = 0
+    intensity_levels.map(il => {
+      sum_intensity += il + 1
+    })
 
     return Math.floor(
       (sum_intensity * 100) / ((maxmoves - 1) * intensity_level_count)
@@ -163,8 +162,8 @@ module.exports = (selector, blocks, session_types) => {
     // return how many times an item appears on an array
     // thanks for someone in stackoverflow for letting me go sleep
 
-    var count = 0
-    for (var i = 0; i < array.length; i++) {
+    let count = 0
+    for (let i = 0; i < array.length; i++) {
       if (array[i] === what) {
         count++
       }
@@ -239,20 +238,18 @@ module.exports = (selector, blocks, session_types) => {
 
   const loadcookies = () => {
     // cut cookies off of each other
-    var cookies = document.cookie.split(';')
+    const cookies = document.cookie.split(';')
 
     // cut cookie ids and values off of each other
-    var loaded_cookies = {}
+    let loaded_cookies = {}
     cookies.forEach(el => {
-      var cookiepair = el.split('=')
-      var id = cookiepair[0].trim()
+      const cookiepair = el.split('=')
+      const id = cookiepair[0].trim()
       if (Array.isArray(cookiepair[1])) {
-        var value = cookiepair[1].split(',')
+        loaded_cookies[id] = cookiepair[1].split(',')
       } else {
-        var value = cookiepair[1]
+        loaded_cookies[id] = cookiepair[1]
       }
-
-      loaded_cookies[id] = value
     })
     return loaded_cookies
   }
@@ -265,99 +262,24 @@ module.exports = (selector, blocks, session_types) => {
       return []
     }
 
-    var integervalues = []
-
-    inputlist.split(',').forEach(el => {
-      integervalues.push(Number(el))
-    })
-    return integervalues
+    return inputlist.split(',').map(el => Number(el))
   }
 
   const savecookies = (lists_to_store, days) => {
     // save session for cookie for one day
     // expects a list of objects where "id" is id, and "l" is list of elements
-    var expiresattrib = new Date(Date.now() + days * 60 * 60 * 24 * 1000)
+    const expiresattrib = new Date(Date.now() + days * 60 * 60 * 24 * 1000)
     lists_to_store.forEach(el => {
       if (Array.isArray(el.l)) {
         str = el.l.join()
       } else {
         str = el.l
       }
-      var cookiestr = el.id + '=' + str + ';expires=' + expiresattrib + ';'
-      document.cookie = cookiestr
+      document.cookie = el.id + '=' + str + ';expires=' + expiresattrib + ';'
     })
   }
 
-  const generate_bubblechart = (element, data) => {
-    // make a bubble chart d3 visualization
-    var width = 300
-    var height = 300
-    var ballsize = 30
-
-    const vdata = data.map(d => {
-      return {
-        ...d,
-        x: Math.random() * width,
-        y: Math.random() * height
-      }
-    })
-
-    // function for inverse transformation of area pi*r^2
-    const calc_r = count => {
-      return ballsize * Math.sqrt(count)
-    }
-
-    d3.select(element).html('')
-    var svg = d3
-      .select(element)
-      .append('svg')
-      .attr('height', height)
-      .attr('class', 'boxitem')
-      .attr('width', width)
-      .attr('viewBox', [0, 0, width, height])
-
-    var circles = svg
-      .selectAll('circle')
-      .data(vdata)
-      .enter()
-      .append('circle')
-      //                   .attr("r", function (d) {return d.count*ballsize })
-      .attr('r', d => calc_r(d.count))
-      .style('fill', d => {
-        if (d.maxintensity == 0) {
-          return 'lightgreen'
-        } else if (d.maxintensity == 1) {
-          return 'khaki'
-        } else {
-          return 'lightpink'
-        }
-      })
-
-    var texts = svg
-      .selectAll('texts')
-      .data(vdata)
-      .enter()
-      .append('text')
-      .text(d => d.muscle)
-      .attr('text-anchor', 'middle')
-
-    const ticked = () => {
-      circles.attr('cx', d => d.x).attr('cy', d => d.y)
-      texts.attr('x', d => d.x).attr('y', d => d.y)
-    }
-
-    var simulation = d3
-      .forceSimulation()
-      .force('x', d3.forceX(width / 2).strength(0.05))
-      .force('y', d3.forceY(height / 2).strength(0.05))
-      .force(
-        'collide',
-        d3.forceCollide(d => calc_r(d.count) + 1)
-      )
-
-    simulation.nodes(vdata).on('tick', ticked)
-  }
-
+  // code begins
   // generate control-buttons
   const btn = document.createElement('BUTTON')
   btn.innerHTML = 'Random workout'
@@ -398,7 +320,7 @@ module.exports = (selector, blocks, session_types) => {
   let darkmodeon = false
 
   // make a temporary copy of block database that we will cut down
-  var available_blocks = blocks.slice()
+  const available_blocks = blocks.slice()
 
   // cookie stuff
   // check if loaded cookies contain previous session
