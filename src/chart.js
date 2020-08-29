@@ -1,6 +1,6 @@
-const d3 = require('d3')
+import * as d3 from 'd3'
 
-exports.bubblechart = (element, data, width, height, ballsize) => {
+const bubblechart = (element, data, width, height, ballsize) => {
   // make a bubble chart d3 visualization
 
   const vdata = data.map(d => {
@@ -66,3 +66,5 @@ exports.bubblechart = (element, data, width, height, ballsize) => {
 
   simulation.nodes(vdata).on('tick', ticked)
 }
+
+export { bubblechart }

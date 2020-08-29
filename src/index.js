@@ -1,4 +1,4 @@
-const session = require("./gym_moves")
-const random_session = require("./random_session")
+import session from './gym_moves.json'
+import { randomSession } from './random_session'
 
-random_session("root", session.moves, session.series)
+randomSession('root', session.moves, session.series)

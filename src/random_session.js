@@ -1,7 +1,7 @@
-const charts = require('./chart.js')
-require('./style.css')
+import { bubblechart } from './chart.js'
+import './style.css'
 
-module.exports = (selector, blocks, session_types) => {
+const randomSession = (selector, blocks, session_types) => {
   // Js app that lets the user randomize a session.
   // Selector is the element selector of where app is placed,
   // blocks is list of lists of
@@ -56,7 +56,10 @@ module.exports = (selector, blocks, session_types) => {
     max_blocks
   ) => {
     // map the move_indices to moves
-    session_moves = index_with_array(available_blocks, session_move_indices)
+    const session_moves = index_with_array(
+      available_blocks,
+      session_move_indices
+    )
 
     // calculate muscle coverage things
     const all_block_impacts = calc_unique_elements(get_nested_list(blocks, 1))
@@ -71,7 +74,7 @@ module.exports = (selector, blocks, session_types) => {
       pagestr += 'REST! Go to McDonalds.<br>'
     } else {
       pagestr += '<table>'
-      for (i = 0; i < session_moves.length; i++) {
+      for (let i = 0; i < session_moves.length; i++) {
         pagestr += '<tr><td>'
         pagestr += session_types[session_intensity_levels[i]]
         pagestr += '</td><td>'
@@ -102,13 +105,13 @@ module.exports = (selector, blocks, session_types) => {
     summaryDiv.innerHTML = pagestr
 
     // take the second value (muscles) from nested lists in database
-    list_of_movelists = get_nested_list(session_moves, 1)
+    const list_of_movelists = get_nested_list(session_moves, 1)
 
     // form muscle stress object, collect to object muscle name, and intensities
     // it has in the training session
     let duplicate_session_muscles = []
     let muscle_intensities = {}
-    for (i = 0; i < list_of_movelists.length; i++) {
+    for (let i = 0; i < list_of_movelists.length; i++) {
       list_of_movelists[i].forEach(el => {
         duplicate_session_muscles.push(el)
         if (muscle_intensities.hasOwnProperty(el)) {
@@ -129,7 +132,7 @@ module.exports = (selector, blocks, session_types) => {
       })
     }
 
-    charts.bubblechart('#d3Chart', vdata, 300, 300, 30)
+    bubblechart('#d3Chart', vdata, 300, 300, 30)
 
     savecookies(
       [
@@ -191,7 +194,7 @@ module.exports = (selector, blocks, session_types) => {
     // Return list of unique elements appear in the list
 
     var all_elements = []
-    for (i = 0; i < my_list.length; i++) {
+    for (let i = 0; i < my_list.length; i++) {
       all_elements = all_elements.concat(my_list[i])
     }
 
@@ -213,7 +216,7 @@ module.exports = (selector, blocks, session_types) => {
   const print_list = list_to_print => {
     // return a string of a list so that there is break between elements
     var print_literal = ''
-    for (i = 0; i < list_to_print.length; i++) {
+    for (let i = 0; i < list_to_print.length; i++) {
       print_literal += list_to_print[i] + ' '
     }
     return print_literal
@@ -221,15 +224,15 @@ module.exports = (selector, blocks, session_types) => {
 
   const generate_workout = (len_movedb, movecount, intensity_level_count) => {
     // generate workout, randomize move integers and intensity levels
-    var session_moves = []
-    var session_intensity_levels = []
-    var available_moves = []
+    const session_moves = []
+    const session_intensity_levels = []
+    const available_moves = []
 
     // make a vector of numbers 0..len_movedb-1
-    for (var i = 0; i != len_movedb; ++i) available_moves.push(i)
+    for (let i = 0; i != len_movedb; ++i) available_moves.push(i)
 
-    for (i = 0; i < movecount; i++) {
-      var selected_move = rand_int(available_moves.length)
+    for (let i = 0; i < movecount; i++) {
+      const selected_move = rand_int(available_moves.length)
       session_moves.push(available_moves[selected_move])
       session_intensity_levels.push(rand_int(intensity_level_count))
       available_moves.splice(selected_move, 1)
@@ -271,6 +274,7 @@ module.exports = (selector, blocks, session_types) => {
     // expects a list of objects where "id" is id, and "l" is list of elements
     const expiresattrib = new Date(Date.now() + days * 60 * 60 * 24 * 1000)
     lists_to_store.forEach(el => {
+      let str = ''
       if (Array.isArray(el.l)) {
         str = el.l.join()
       } else {
@@ -349,3 +353,5 @@ module.exports = (selector, blocks, session_types) => {
     set_darkmode()
   }
 }
+
+export { randomSession }
