@@ -1,4 +1,5 @@
 const charts = require('./chart.js')
+require('./style.css')
 
 module.exports = (selector, blocks, session_types) => {
   // Js app that lets the user randomize a session.
