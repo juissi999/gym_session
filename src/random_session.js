@@ -112,26 +112,23 @@ const randomSession = (selector, blocks, sessionTypes) => {
 
     // form muscle stress object, collect to object muscle name, and intensities
     // it has in the training session
-    let muscleIntensities = {}
+    let muscleEffects = []
     impactsInSession.map((el, i) => {
-      if (muscleIntensities.hasOwnProperty(el)) {
-        muscleIntensities[el].push(sessionIntensityLevels[i])
+      let foundInt = muscleEffects.find(mi => mi.muscle === el)
+      if (foundInt) {
+        foundInt = {
+          ...foundInt,
+          effects: foundInt.effects.push(sessionIntensityLevels[i])
+        }
       } else {
-        muscleIntensities[el] = [sessionIntensityLevels[i]]
+        muscleEffects.push({
+          muscle: el,
+          effects: [sessionIntensityLevels[i]]
+        })
       }
     })
 
-    // form d3-dataobject from muscle stress object
-    let vdata = []
-    for (let key in muscleIntensities) {
-      vdata.push({
-        muscle: key,
-        count: muscleIntensities[key].length,
-        maxintensity: Math.max.apply(Math, muscleIntensities[key])
-      })
-    }
-
-    bubblechart('#d3Chart', vdata, 300, 300, 30)
+    bubblechart('#d3Chart', muscleEffects, 300, 300, 30)
 
     saveCookies(
       [

@@ -31,11 +31,12 @@ const bubblechart = (element, data, width, height, ballsize) => {
     .enter()
     .append('circle')
     //                   .attr("r", function (d) {return d.count*ballsize })
-    .attr('r', d => calcR(d.count))
+    .attr('r', d => calcR(d.effects.length))
     .style('fill', d => {
-      if (d.maxintensity == 0) {
+      const maxeffect = Math.max(d.effects)
+      if (maxeffect == 0) {
         return 'lightgreen'
-      } else if (d.maxintensity == 1) {
+      } else if (maxeffect == 1) {
         return 'khaki'
       } else {
         return 'lightpink'
@@ -61,7 +62,7 @@ const bubblechart = (element, data, width, height, ballsize) => {
     .force('y', d3.forceY(height / 2).strength(0.05))
     .force(
       'collide',
-      d3.forceCollide(d => calcR(d.count) + 1)
+      d3.forceCollide(d => calcR(d.effects.length) + 1)
     )
 
   simulation.nodes(vdata).on('tick', ticked)
