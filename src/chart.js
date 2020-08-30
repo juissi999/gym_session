@@ -12,7 +12,7 @@ const bubblechart = (element, data, width, height, ballsize) => {
   })
 
   // function for inverse transformation of area pi*r^2
-  const calc_r = count => {
+  const calcR = count => {
     return ballsize * Math.sqrt(count)
   }
 
@@ -31,7 +31,7 @@ const bubblechart = (element, data, width, height, ballsize) => {
     .enter()
     .append('circle')
     //                   .attr("r", function (d) {return d.count*ballsize })
-    .attr('r', d => calc_r(d.count))
+    .attr('r', d => calcR(d.count))
     .style('fill', d => {
       if (d.maxintensity == 0) {
         return 'lightgreen'
@@ -61,7 +61,7 @@ const bubblechart = (element, data, width, height, ballsize) => {
     .force('y', d3.forceY(height / 2).strength(0.05))
     .force(
       'collide',
-      d3.forceCollide(d => calc_r(d.count) + 1)
+      d3.forceCollide(d => calcR(d.count) + 1)
     )
 
   simulation.nodes(vdata).on('tick', ticked)

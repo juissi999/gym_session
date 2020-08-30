@@ -1,15 +1,15 @@
 import { bubblechart } from './chart.js'
 import './style.css'
 
-const randomSession = (selector, blocks, session_types) => {
+const randomSession = (selector, blocks, sessionTypes) => {
   // Js app that lets the user randomize a session.
   // Selector is the element selector of where app is placed,
   // blocks is list of lists of
-  // [block_name, [block_impacts_to1, block_impacts_to2, ...]],
-  // session_types is a list of session types e.g. ["5min", "10min", "15min"]
+  // [blockName, [blockImpactsTo1, blockImpactsTo2, ...]],
+  // sessionTypes is a list of session types e.g. ["5min", "10min", "15min"]
   // ascending in intensity.
 
-  const set_darkmode = () => {
+  const setDarkmode = () => {
     if (darkmodeon) {
       // if dark mode set to on
       btn2.innerHTML = 'L'
@@ -20,65 +20,60 @@ const randomSession = (selector, blocks, session_types) => {
       document.body.classList.remove('darktheme')
       darkmodeon = false
     }
-    savecookies([{ id: 'darkmode', l: darkmodeon }])
+    saveCookies([{ id: 'darkmode', l: darkmodeon }])
   }
 
-  const randbutton_hide_callback = () => {
-    div.removeEventListener('transitionend', randbutton_hide_callback)
+  const randbuttonHideCallback = () => {
+    div.removeEventListener('transitionend', randbuttonHideCallback)
     div.classList.remove('hidden')
     div.classList.add('visible')
 
-    const max_blocks = 10
+    const maxBlocks = 10
     // random how many blocks to include in this session
-    const block_count = rand_int(max_blocks)
+    const blockCount = randInt(maxBlocks)
 
     // how many different session types are found
-    const session_type_count = session_types.length
+    const sessionTypeCount = sessionTypes.length
 
     // generate workout
-    const [session_move_indices, session_intensity_levels] = generate_workout(
-      available_blocks.length,
-      block_count,
-      session_type_count
+    const [sessionMoveIndices, sessionIntensityLevels] = generateWorkout(
+      availableBlocks.length,
+      blockCount,
+      sessionTypeCount
     )
-    display_session(
-      session_move_indices,
-      session_intensity_levels,
-      session_type_count,
-      max_blocks
+    displaySession(
+      sessionMoveIndices,
+      sessionIntensityLevels,
+      sessionTypeCount,
+      maxBlocks
     )
   }
 
-  const display_session = (
-    session_move_indices,
-    session_intensity_levels,
-    intensity_level_count,
-    max_blocks
+  const displaySession = (
+    sessionMoveIndices,
+    sessionIntensityLevels,
+    intensityLevelCount,
+    maxBlocks
   ) => {
-    // map the move_indices to moves
-    const session_moves = index_with_array(
-      available_blocks,
-      session_move_indices
-    )
+    // map the moveIndices to moves
+    const sessionMoves = indexWithArray(availableBlocks, sessionMoveIndices)
 
     // calculate muscle coverage things
-    const all_block_impacts = calc_unique_elements(get_nested_list(blocks, 1))
-    const impacts_in_session = calc_unique_elements(
-      get_nested_list(session_moves, 1)
-    )
-    const coverage = impacts_in_session.length / all_block_impacts.length
+    const allBlockImpacts = calcUniqueElements(getNestedList(blocks, 1))
+    const impactsInSession = calcUniqueElements(getNestedList(sessionMoves, 1))
+    const coverage = impactsInSession.length / allBlockImpacts.length
 
     // print page
     let pagestr = ''
-    if (session_move_indices.length == 0) {
+    if (sessionMoveIndices.length == 0) {
       pagestr += 'REST! Go to McDonalds.<br>'
     } else {
       pagestr += '<table>'
-      for (let i = 0; i < session_moves.length; i++) {
+      for (let i = 0; i < sessionMoves.length; i++) {
         pagestr += '<tr><td>'
-        pagestr += session_types[session_intensity_levels[i]]
+        pagestr += sessionTypes[sessionIntensityLevels[i]]
         pagestr += '</td><td>'
-        pagestr += session_moves[i][0]
+        pagestr += sessionMoves[i][0]
         pagestr += '</td></tr>'
       }
       pagestr += '</table>'
@@ -86,83 +81,83 @@ const randomSession = (selector, blocks, session_types) => {
     movesDiv.innerHTML = pagestr
     // pagestr += "<br><br>"
     // pagestr += "Muscles in this session:<br>"
-    // pagestr += print_list(muscles_in_session)
+    // pagestr += printList(musclesInSession)
     // pagestr += "<br><br>"
     // pagestr += "All muscles in database:<br>"
-    // pagestr += print_list(all_muscles)
+    // pagestr += printList(allMuscles)
     pagestr = ''
     pagestr += 'Muscle coverage: ' + Math.floor(coverage * 100).toString() + '%'
     pagestr += '<br>'
     pagestr +=
       'Intensity: ' +
-      calculate_intensity(
-        max_blocks,
-        session_intensity_levels,
-        intensity_level_count
+      calculateIntensity(
+        maxBlocks,
+        sessionIntensityLevels,
+        intensityLevelCount
       ).toString() +
       '%<br>'
 
     summaryDiv.innerHTML = pagestr
 
     // take the second value (muscles) from nested lists in database
-    const list_of_movelists = get_nested_list(session_moves, 1)
+    const listOfMovelists = getNestedList(sessionMoves, 1)
 
     // form muscle stress object, collect to object muscle name, and intensities
     // it has in the training session
-    let duplicate_session_muscles = []
-    let muscle_intensities = {}
-    for (let i = 0; i < list_of_movelists.length; i++) {
-      list_of_movelists[i].forEach(el => {
-        duplicate_session_muscles.push(el)
-        if (muscle_intensities.hasOwnProperty(el)) {
-          muscle_intensities[el].push(session_intensity_levels[i])
+    let duplicateSessionMuscles = []
+    let muscleIntensities = {}
+    for (let i = 0; i < listOfMovelists.length; i++) {
+      listOfMovelists[i].forEach(el => {
+        duplicateSessionMuscles.push(el)
+        if (muscleIntensities.hasOwnProperty(el)) {
+          muscleIntensities[el].push(sessionIntensityLevels[i])
         } else {
-          muscle_intensities[el] = [session_intensity_levels[i]]
+          muscleIntensities[el] = [sessionIntensityLevels[i]]
         }
       })
     }
 
     // form d3-dataobject from muscle stress object
     let vdata = []
-    for (let key in muscle_intensities) {
+    for (let key in muscleIntensities) {
       vdata.push({
         muscle: key,
-        count: muscle_intensities[key].length,
-        maxintensity: Math.max.apply(Math, muscle_intensities[key])
+        count: muscleIntensities[key].length,
+        maxintensity: Math.max.apply(Math, muscleIntensities[key])
       })
     }
 
     bubblechart('#d3Chart', vdata, 300, 300, 30)
 
-    savecookies(
+    saveCookies(
       [
-        { id: 'smi', l: session_move_indices },
-        { id: 'sil', l: session_intensity_levels },
-        { id: 'ilc', l: intensity_level_count },
-        { id: 'max_blocks', l: max_blocks }
+        { id: 'smi', l: sessionMoveIndices },
+        { id: 'sil', l: sessionIntensityLevels },
+        { id: 'ilc', l: intensityLevelCount },
+        { id: 'max_blocks', l: maxBlocks }
       ],
       1
     )
   }
 
-  const calculate_intensity = (
+  const calculateIntensity = (
     maxmoves,
-    intensity_levels,
-    intensity_level_count
+    intensityLevels,
+    intensityLevelCount
   ) => {
     // calculate workout intensity, how many series and how intense they are from max
 
-    let sum_intensity = 0
-    intensity_levels.map(il => {
-      sum_intensity += il + 1
+    let sumIntensity = 0
+    intensityLevels.map(il => {
+      sumIntensity += il + 1
     })
 
     return Math.floor(
-      (sum_intensity * 100) / ((maxmoves - 1) * intensity_level_count)
+      (sumIntensity * 100) / ((maxmoves - 1) * intensityLevelCount)
     )
   }
 
-  const count_in_array = (array, what) => {
+  const countInArray = (array, what) => {
     // return how many times an item appears on an array
     // thanks for someone in stackoverflow for letting me go sleep
 
@@ -175,90 +170,90 @@ const randomSession = (selector, blocks, session_types) => {
     return count
   }
 
-  const index_with_array = (data_array, indexing_array) => {
-    // return a new array with elements[indexing_array] from data_ararray
+  const indexWithArray = (dataArray, indexingArray) => {
+    // return a new array with elements[indexingArray] from dataArarray
     var newarray = []
 
-    indexing_array.forEach(item => {
-      newarray.push(data_array[item])
+    indexingArray.forEach(item => {
+      newarray.push(dataArray[item])
     })
     return newarray
   }
 
-  const rand_int = parameterint => {
+  const randInt = parameterint => {
     // return random integer from 0..parameterint-1
     return Math.floor(Math.random() * parameterint)
   }
 
-  const calc_unique_elements = my_list => {
+  const calcUniqueElements = myList => {
     // Return list of unique elements appear in the list
 
-    var all_elements = []
-    for (let i = 0; i < my_list.length; i++) {
-      all_elements = all_elements.concat(my_list[i])
+    var allElements = []
+    for (let i = 0; i < myList.length; i++) {
+      allElements = allElements.concat(myList[i])
     }
 
     // calculate all unique elements
-    return Array.from(new Set(all_elements))
+    return Array.from(new Set(allElements))
   }
 
-  const get_nested_list = (list_of_lists, elnum) => {
+  const getNestedList = (listOfLists, elnum) => {
     // this will return the [[a, [], x], [b, c, d]
     // where elnum 2 will return list [x, d]
     // a bit of a shitty solution, rework needed
-    var newlist = []
-    list_of_lists.forEach(element => {
+    const newlist = []
+    listOfLists.forEach(element => {
       newlist.push(element[elnum])
     })
     return newlist
   }
 
-  const print_list = list_to_print => {
+  const printList = listToPrint => {
     // return a string of a list so that there is break between elements
-    var print_literal = ''
-    for (let i = 0; i < list_to_print.length; i++) {
-      print_literal += list_to_print[i] + ' '
+    let printLiteral = ''
+    for (let i = 0; i < listToPrint.length; i++) {
+      printLiteral += listToPrint[i] + ' '
     }
-    return print_literal
+    return printLiteral
   }
 
-  const generate_workout = (len_movedb, movecount, intensity_level_count) => {
+  const generateWorkout = (lenMovedb, movecount, intensityLevelCount) => {
     // generate workout, randomize move integers and intensity levels
-    const session_moves = []
-    const session_intensity_levels = []
-    const available_moves = []
+    const sessionMoves = []
+    const sessionIntensityLevels = []
+    const availableMoves = []
 
-    // make a vector of numbers 0..len_movedb-1
-    for (let i = 0; i != len_movedb; ++i) available_moves.push(i)
+    // make a vector of numbers 0..lenMovedb-1
+    for (let i = 0; i != lenMovedb; ++i) availableMoves.push(i)
 
     for (let i = 0; i < movecount; i++) {
-      const selected_move = rand_int(available_moves.length)
-      session_moves.push(available_moves[selected_move])
-      session_intensity_levels.push(rand_int(intensity_level_count))
-      available_moves.splice(selected_move, 1)
+      const selectedMove = randInt(availableMoves.length)
+      sessionMoves.push(availableMoves[selectedMove])
+      sessionIntensityLevels.push(randInt(intensityLevelCount))
+      availableMoves.splice(selectedMove, 1)
     }
-    return [session_moves, session_intensity_levels]
+    return [sessionMoves, sessionIntensityLevels]
   }
 
-  const loadcookies = () => {
+  const loadCookies = () => {
     // cut cookies off of each other
     const cookies = document.cookie.split(';')
 
     // cut cookie ids and values off of each other
-    let loaded_cookies = {}
+    let loadedCookies = {}
     cookies.forEach(el => {
       const cookiepair = el.split('=')
       const id = cookiepair[0].trim()
       if (Array.isArray(cookiepair[1])) {
-        loaded_cookies[id] = cookiepair[1].split(',')
+        loadedCookies[id] = cookiepair[1].split(',')
       } else {
-        loaded_cookies[id] = cookiepair[1]
+        loadedCookies[id] = cookiepair[1]
       }
     })
-    return loaded_cookies
+    return loadedCookies
   }
 
-  const str2int_list = inputlist => {
+  const str2intList = inputlist => {
     // transform a list of "string-numbers" to list of int numbers
 
     // check that the input is actually a list and not empty string (bugfix)
@@ -269,11 +264,11 @@ const randomSession = (selector, blocks, session_types) => {
     return inputlist.split(',').map(el => Number(el))
   }
 
-  const savecookies = (lists_to_store, days) => {
+  const saveCookies = (listsToStore, days) => {
     // save session for cookie for one day
     // expects a list of objects where "id" is id, and "l" is list of elements
     const expiresattrib = new Date(Date.now() + days * 60 * 60 * 24 * 1000)
-    lists_to_store.forEach(el => {
+    listsToStore.forEach(el => {
       let str = ''
       if (Array.isArray(el.l)) {
         str = el.l.join()
@@ -292,7 +287,7 @@ const randomSession = (selector, blocks, session_types) => {
   btn.onclick = () => {
     div.classList.remove('visible')
     div.classList.add('hidden')
-    div.addEventListener('transitionend', randbutton_hide_callback)
+    div.addEventListener('transitionend', randbuttonHideCallback)
   }
 
   const btn2 = document.createElement('BUTTON')
@@ -301,7 +296,7 @@ const randomSession = (selector, blocks, session_types) => {
   btn2.onclick = () => {
     // change darkmode state
     darkmodeon = !darkmodeon
-    set_darkmode()
+    setDarkmode()
   }
 
   const div = document.createElement('div')
@@ -325,32 +320,32 @@ const randomSession = (selector, blocks, session_types) => {
   let darkmodeon = false
 
   // make a temporary copy of block database that we will cut down
-  const available_blocks = blocks.slice()
+  const availableBlocks = blocks.slice()
 
   // cookie stuff
   // check if loaded cookies contain previous session
-  var loaded_cookies = loadcookies()
+  var loadedCookies = loadCookies()
   if (
-    'smi' in loaded_cookies &&
-    'sil' in loaded_cookies &&
-    'ilc' in loaded_cookies &&
-    'max_blocks' in loaded_cookies
+    'smi' in loadedCookies &&
+    'sil' in loadedCookies &&
+    'ilc' in loadedCookies &&
+    'max_blocks' in loadedCookies
   ) {
-    display_session(
-      str2int_list(loaded_cookies['smi']),
-      str2int_list(loaded_cookies['sil']),
-      Number(loaded_cookies['ilc']),
-      Number(loaded_cookies['max_blocks'])
+    displaySession(
+      str2intList(loadedCookies['smi']),
+      str2intList(loadedCookies['sil']),
+      Number(loadedCookies['ilc']),
+      Number(loadedCookies['max_blocks'])
     )
   }
 
-  if ('darkmode' in loaded_cookies) {
-    if (loaded_cookies['darkmode'] == 'true') {
+  if ('darkmode' in loadedCookies) {
+    if (loadedCookies['darkmode'] == 'true') {
       darkmodeon = true
-    } else if (loaded_cookies['darkmode'] == 'false') {
+    } else if (loadedCookies['darkmode'] == 'false') {
       darkmodeon = false
     }
-    set_darkmode()
+    setDarkmode()
   }
 }
 
