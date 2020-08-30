@@ -102,7 +102,6 @@ const randomSession = (selector, blocks, sessionTypes) => {
 
     // take the second value (muscles) from nested lists in database
     const listOfMovelists = getNestedList(sessionMoves, 1)
-    console.log(sessionMoves)
 
     // form muscle stress object, collect to object muscle name, and intensities
     // it has in the training session
