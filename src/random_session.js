@@ -1,4 +1,5 @@
 import { bubblechart } from './chart.js'
+import randomPermutation from 'random-permutation'
 import './style.css'
 
 const randomSession = (selector, blocks, sessionTypes) => {
@@ -101,14 +102,13 @@ const randomSession = (selector, blocks, sessionTypes) => {
 
     // take the second value (muscles) from nested lists in database
     const listOfMovelists = getNestedList(sessionMoves, 1)
+    console.log(sessionMoves)
 
     // form muscle stress object, collect to object muscle name, and intensities
     // it has in the training session
-    let duplicateSessionMuscles = []
     let muscleIntensities = {}
     for (let i = 0; i < listOfMovelists.length; i++) {
       listOfMovelists[i].forEach(el => {
-        duplicateSessionMuscles.push(el)
         if (muscleIntensities.hasOwnProperty(el)) {
           muscleIntensities[el].push(sessionIntensityLevels[i])
         } else {
@@ -221,17 +221,16 @@ const randomSession = (selector, blocks, sessionTypes) => {
     // generate workout, randomize move integers and intensity levels
     const sessionMoves = []
     const sessionIntensityLevels = []
-    const availableMoves = []
 
-    // make a vector of numbers 0..lenMovedb-1
-    for (let i = 0; i != lenMovedb; ++i) availableMoves.push(i)
+    // make a permutation
+    const permutation = randomPermutation(lenMovedb)
 
     for (let i = 0; i < movecount; i++) {
-      const selectedMove = randInt(availableMoves.length)
-      sessionMoves.push(availableMoves[selectedMove])
+      // index movedb from the beginning of permutation
+      sessionMoves.push(permutation[i])
       sessionIntensityLevels.push(randInt(intensityLevelCount))
-      availableMoves.splice(selectedMove, 1)
     }
+
     return [sessionMoves, sessionIntensityLevels]
   }
 
