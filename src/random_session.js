@@ -59,10 +59,20 @@ const randomSession = (selector, blocks, sessionTypes) => {
     // map the moveIndices to moves
     const sessionMoves = indexWithArray(availableBlocks, sessionMoveIndices)
 
-    // calculate muscle coverage things
-    const allBlockImpacts = calcUniqueElements(getNestedList(blocks, 1))
-    const impactsInSession = calcUniqueElements(getNestedList(sessionMoves, 1))
-    const coverage = impactsInSession.length / allBlockImpacts.length
+    // calculate muscle coverage things (first concat nested lists on element 1)
+    const allBlockImpacts = blocks.reduce(
+      (prev, cur) => prev.concat(cur[1]),
+      []
+    )
+
+    const impactsInSession = sessionMoves.reduce(
+      (prev, cur) => prev.concat(cur[1]),
+      []
+    )
+
+    const coverage =
+      uniqueElements(impactsInSession).length /
+      uniqueElements(allBlockImpacts).length
 
     // print page
     let pagestr = ''
@@ -100,21 +110,16 @@ const randomSession = (selector, blocks, sessionTypes) => {
 
     summaryDiv.innerHTML = pagestr
 
-    // take the second value (muscles) from nested lists in database
-    const listOfMovelists = getNestedList(sessionMoves, 1)
-
     // form muscle stress object, collect to object muscle name, and intensities
     // it has in the training session
     let muscleIntensities = {}
-    for (let i = 0; i < listOfMovelists.length; i++) {
-      listOfMovelists[i].forEach(el => {
-        if (muscleIntensities.hasOwnProperty(el)) {
-          muscleIntensities[el].push(sessionIntensityLevels[i])
-        } else {
-          muscleIntensities[el] = [sessionIntensityLevels[i]]
-        }
-      })
-    }
+    impactsInSession.map((el, i) => {
+      if (muscleIntensities.hasOwnProperty(el)) {
+        muscleIntensities[el].push(sessionIntensityLevels[i])
+      } else {
+        muscleIntensities[el] = [sessionIntensityLevels[i]]
+      }
+    })
 
     // form d3-dataobject from muscle stress object
     let vdata = []
@@ -156,19 +161,6 @@ const randomSession = (selector, blocks, sessionTypes) => {
     )
   }
 
-  const countInArray = (array, what) => {
-    // return how many times an item appears on an array
-    // thanks for someone in stackoverflow for letting me go sleep
-
-    let count = 0
-    for (let i = 0; i < array.length; i++) {
-      if (array[i] === what) {
-        count++
-      }
-    }
-    return count
-  }
-
   const indexWithArray = (dataArray, indexingArray) => {
     // return a new array with elements[indexingArray] from dataArarray
     var newarray = []
@@ -184,36 +176,10 @@ const randomSession = (selector, blocks, sessionTypes) => {
     return Math.floor(Math.random() * parameterint)
   }
 
-  const calcUniqueElements = myList => {
+  const uniqueElements = myList => {
     // Return list of unique elements appear in the list
 
-    var allElements = []
-    for (let i = 0; i < myList.length; i++) {
-      allElements = allElements.concat(myList[i])
-    }
-
-    // calculate all unique elements
-    return Array.from(new Set(allElements))
-  }
-
-  const getNestedList = (listOfLists, elnum) => {
-    // this will return the [[a, [], x], [b, c, d]
-    // where elnum 2 will return list [x, d]
-    // a bit of a shitty solution, rework needed
-    const newlist = []
-    listOfLists.forEach(element => {
-      newlist.push(element[elnum])
-    })
-    return newlist
-  }
-
-  const printList = listToPrint => {
-    // return a string of a list so that there is break between elements
-    let printLiteral = ''
-    for (let i = 0; i < listToPrint.length; i++) {
-      printLiteral += listToPrint[i] + ' '
-    }
-    return printLiteral
+    return Array.from(new Set(myList))
   }
 
   const generateWorkout = (lenMovedb, movecount, intensityLevelCount) => {
